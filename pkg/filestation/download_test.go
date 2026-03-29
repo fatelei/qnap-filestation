@@ -49,7 +49,7 @@ func setupDownloadTestClient(t *testing.T) (*api.Client, *testutil.MockServer) {
 
 // TestDownloadFile_Success tests successful file download
 func TestDownloadFile_Success(t *testing.T) {
-	client, mockServer := setupDownloadTestClient(t)
+	_, mockServer := setupDownloadTestClient(t)
 	defer mockServer.Close()
 
 	ctx := context.Background()
