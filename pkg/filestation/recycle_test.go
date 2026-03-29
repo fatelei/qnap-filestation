@@ -438,7 +438,7 @@ func TestCancelTrashRecovery(t *testing.T) {
 					"success": 1,
 					"data": map[string]interface{}{
 						"success": true,
-						"message": "Recovery cancelled successfully",
+						"message": "Recovery canceled successfully",
 					},
 				},
 			},

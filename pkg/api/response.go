@@ -85,7 +85,7 @@ func NewResponseParser() *ResponseParser {
 
 // ParseJSON parses a JSON response into the provided interface
 func (rp *ResponseParser) ParseJSON(resp *http.Response, v interface{}) error {
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -133,7 +133,7 @@ func (rp *ResponseParser) ParseResponse(resp *http.Response, v interface{}) erro
 
 // ParseListResponse parses a list response
 func (rp *ResponseParser) ParseListResponse(resp *http.Response, v interface{}) error {
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

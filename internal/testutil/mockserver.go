@@ -65,7 +65,9 @@ func (ms *MockServer) handler(w http.ResponseWriter, r *http.Request) {
 	<authPassed>1</authPassed>
 	<authSid>` + sid + `</authSid>
 </QDocRoot>`
-			w.Write([]byte(xmlResponse))
+			if _, err := w.Write([]byte(xmlResponse)); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 			return
 		}
 
@@ -78,7 +80,9 @@ func (ms *MockServer) handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -94,17 +98,21 @@ func (ms *MockServer) handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(resp.StatusCode)
 
 		if resp.Body != nil {
-			json.NewEncoder(w).Encode(resp.Body)
+			if err := json.NewEncoder(w).Encode(resp.Body); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
 		}
 		return
 	}
 
 	// Default response
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": 1,
 		"data":    map[string]interface{}{},
-	})
+	}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // URL returns the server's URL

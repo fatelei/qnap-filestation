@@ -2904,7 +2904,6 @@ func TestExtractStatus_Structure(t *testing.T) {
 		DestPath:    "/dest",
 		FileCount:   10,
 		Processed:   10,
-		Error:       "",
 	}
 
 	if status.PID != "test-pid" {
@@ -2940,8 +2939,6 @@ func TestExtractFile_Structure(t *testing.T) {
 	}
 
 	folder := ExtractFile{
-		FileName: "folder",
-		FileSize: 0,
 		IsFolder: 1,
 	}
 

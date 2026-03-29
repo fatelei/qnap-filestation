@@ -153,7 +153,7 @@ func (c *Client) Login(ctx context.Context) error {
 	if err != nil {
 		return WrapAPIError(ErrNetwork, "network error", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// Parse XML response
 	var result struct {
@@ -200,7 +200,7 @@ func (c *Client) Logout(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	c.setSID("")
 	c.logger.Info("Successfully logged out")

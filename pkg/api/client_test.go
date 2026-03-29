@@ -510,7 +510,7 @@ func TestClientLogin_ContextCancellation(t *testing.T) {
 
 	err = client.Login(ctx)
 	if err == nil {
-		t.Fatal("Login() expected error for cancelled context, got nil")
+		t.Fatal("Login() expected error for canceled context, got nil")
 	}
 }
 

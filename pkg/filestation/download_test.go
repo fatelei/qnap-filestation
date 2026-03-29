@@ -53,7 +53,6 @@ func TestDownloadFile_Success(t *testing.T) {
 	defer mockServer.Close()
 
 	ctx := context.Background()
-	fs := NewFileStationService(client)
 
 	// Create a custom test server to handle binary download
 	testContent := []byte("Hello, World! This is downloaded content.")
@@ -96,7 +95,7 @@ func TestDownloadFile_Success(t *testing.T) {
 	}
 	newClient.SetSID("test-sid-12345")
 
-	fs = NewFileStationService(newClient)
+fs := NewFileStationService(newClient)
 
 	// Create temporary directory for download
 	tmpDir := t.TempDir()
@@ -1643,7 +1642,7 @@ func TestDownloadReader_ContextCancellation(t *testing.T) {
 	}
 	client.SetSID("test-sid")
 
-	// Create a context that's already cancelled
+	// Create a context that's already canceled
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel() // Cancel immediately
 
@@ -1653,7 +1652,7 @@ func TestDownloadReader_ContextCancellation(t *testing.T) {
 
 	// Context cancellation should cause an error
 	if err == nil {
-		t.Error("DownloadReader() expected error with cancelled context, got nil")
+		t.Error("DownloadReader() expected error with canceled context, got nil")
 	}
 }
 

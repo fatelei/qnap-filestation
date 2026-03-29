@@ -45,7 +45,7 @@ func (fs *FileStationService) CloudStatus(ctx context.Context) (*CloudStatusResp
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result CloudStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -134,7 +134,7 @@ func (fs *FileStationService) RemoteFolder(ctx context.Context, options *RemoteF
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result RemoteFolderResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -192,7 +192,7 @@ func (fs *FileStationService) GetCloudSyncStatus(ctx context.Context) (*GetCloud
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetCloudSyncStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -251,7 +251,7 @@ func (fs *FileStationService) MountIso(ctx context.Context, options *MountIsoOpt
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result MountIsoResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -299,7 +299,7 @@ func (fs *FileStationService) UnmountIso(ctx context.Context, mountPoint string)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result UnmountIsoResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -362,7 +362,7 @@ func (fs *FileStationService) MountQdff(ctx context.Context, options *MountQdffO
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result MountQdffResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -410,7 +410,7 @@ func (fs *FileStationService) UnmountQdff(ctx context.Context, mountPoint string
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result UnmountQdffResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -458,7 +458,7 @@ func (fs *FileStationService) ExternalDiskDisconnect(ctx context.Context, diskPa
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result ExternalDiskDisconnectResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -509,7 +509,7 @@ func (fs *FileStationService) GetHostTypeList(ctx context.Context) (*GetHostType
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetHostTypeListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -560,7 +560,7 @@ func (fs *FileStationService) GetDomainIPList(ctx context.Context) (*GetDomainIP
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetDomainIPListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -640,7 +640,7 @@ func (fs *FileStationService) GetDomainIPListEx(ctx context.Context, options *Ge
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetDomainIPListExResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
