@@ -54,7 +54,11 @@ func (fs *FileStationService) ListFiles(ctx context.Context, path string, option
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var listResp ListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&listResp); err != nil {
@@ -83,7 +87,11 @@ func (fs *FileStationService) GetFileInfo(ctx context.Context, path string) (*Fi
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result struct {
 		api.BaseResponse
@@ -129,7 +137,11 @@ func (fs *FileStationService) DeleteFile(ctx context.Context, path string) error
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -166,7 +178,11 @@ func (fs *FileStationService) RenameFile(ctx context.Context, oldPath, newPath s
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -207,7 +223,11 @@ func (fs *FileStationService) CopyFile(ctx context.Context, source, dest string,
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -248,7 +268,11 @@ func (fs *FileStationService) MoveFile(ctx context.Context, source, dest string,
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -301,7 +325,11 @@ func (fs *FileStationService) DeleteFiles(ctx context.Context, sourcePath string
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result UtilRequestResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -339,7 +367,11 @@ func (fs *FileStationService) RenameFileUtil(ctx context.Context, path, sourceNa
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result UtilRequestResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -384,7 +416,11 @@ func (fs *FileStationService) CopyFilesUtil(ctx context.Context, sourcePath, des
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result UtilRequestResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -429,7 +465,11 @@ func (fs *FileStationService) MoveFilesUtil(ctx context.Context, sourcePath, des
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result UtilRequestResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

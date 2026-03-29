@@ -108,7 +108,11 @@ func (fs *FileStationService) EncryptFile(ctx context.Context, options *EncryptO
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var encryptResp EncryptResponse
 	if err := json.NewDecoder(resp.Body).Decode(&encryptResp); err != nil {
@@ -165,7 +169,11 @@ func (fs *FileStationService) DecryptFile(ctx context.Context, options *DecryptO
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var decryptResp DecryptResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decryptResp); err != nil {
@@ -236,7 +244,11 @@ func (fs *FileStationService) CipherFile(ctx context.Context, options *CipherOpt
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var cipherResp CipherResponse
 	if err := json.NewDecoder(resp.Body).Decode(&cipherResp); err != nil {
@@ -299,7 +311,11 @@ func (fs *FileStationService) ChecksumFile(ctx context.Context, options *Checksu
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var checksumResp ChecksumResponse
 	if err := json.NewDecoder(resp.Body).Decode(&checksumResp); err != nil {

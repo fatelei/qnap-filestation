@@ -13,19 +13,19 @@ import (
 
 // TranscodeJob represents a transcode job
 type TranscodeJob struct {
-	PID         string    `json:"pid"`          // Process ID
-	SourceFile  string    `json:"source_file"`  // Source video file
-	OutputPath  string    `json:"output_path"`  // Output transcoded file path
-	Codec       string    `json:"codec"`        // Target codec (h264, h265, etc.)
-	Resolution  string    `json:"resolution"`   // Target resolution (720p, 1080p, etc.)
-	Bitrate     int       `json:"bitrate"`      // Target bitrate (kbps)
-	Status      string    `json:"status"`       // Status: pending, running, finished, failed
-	Progress    float64   `json:"progress"`     // Progress percentage (0-100)
-	StartTime   time.Time `json:"start_time"`   // Job start time
-	EndTime     time.Time `json:"end_time"`     // Job end time
-	Error       string    `json:"error,omitempty"` // Error message if failed
-	FileSize    int64     `json:"file_size"`    // Source file size
-	Processed   int64     `json:"processed"`    // Processed bytes
+	PID        string    `json:"pid"`             // Process ID
+	SourceFile string    `json:"source_file"`     // Source video file
+	OutputPath string    `json:"output_path"`     // Output transcoded file path
+	Codec      string    `json:"codec"`           // Target codec (h264, h265, etc.)
+	Resolution string    `json:"resolution"`      // Target resolution (720p, 1080p, etc.)
+	Bitrate    int       `json:"bitrate"`         // Target bitrate (kbps)
+	Status     string    `json:"status"`          // Status: pending, running, finished, failed
+	Progress   float64   `json:"progress"`        // Progress percentage (0-100)
+	StartTime  time.Time `json:"start_time"`      // Job start time
+	EndTime    time.Time `json:"end_time"`        // Job end time
+	Error      string    `json:"error,omitempty"` // Error message if failed
+	FileSize   int64     `json:"file_size"`       // Source file size
+	Processed  int64     `json:"processed"`       // Processed bytes
 }
 
 // EstTranscodeOptions contains options for starting a transcode job
@@ -47,13 +47,13 @@ type TranscodeStatusResponse struct {
 
 // VideoQueueStatus represents the video transcode queue status
 type VideoQueueStatus struct {
-	Jobs       []TranscodeJob `json:"jobs"`       // List of jobs in queue
-	Total      int            `json:"total"`      // Total number of jobs
-	Running    int            `json:"running"`    // Number of running jobs
-	Pending    int            `json:"pending"`    // Number of pending jobs
-	Finished   int            `json:"finished"`   // Number of finished jobs
-	Failed     int            `json:"failed"`     // Number of failed jobs
-	MaxConcurrent int         `json:"max_concurrent"` // Max concurrent jobs
+	Jobs          []TranscodeJob `json:"jobs"`           // List of jobs in queue
+	Total         int            `json:"total"`          // Total number of jobs
+	Running       int            `json:"running"`        // Number of running jobs
+	Pending       int            `json:"pending"`        // Number of pending jobs
+	Finished      int            `json:"finished"`       // Number of finished jobs
+	Failed        int            `json:"failed"`         // Number of failed jobs
+	MaxConcurrent int            `json:"max_concurrent"` // Max concurrent jobs
 }
 
 // VideoQueueStatusResponse represents the response from get_video_qstatus
@@ -64,9 +64,9 @@ type VideoQueueStatusResponse struct {
 
 // VideoFolderMonitorOptions contains options for video folder monitoring
 type VideoFolderMonitorOptions struct {
-	Path            string `json:"path"`             // Folder path to monitor
-	Recursive       bool   `json:"recursive"`        // Monitor subdirectories
-	AutoTranscode   bool   `json:"auto_transcode"`   // Auto-transcode new videos
+	Path             string               `json:"path"`                        // Folder path to monitor
+	Recursive        bool                 `json:"recursive"`                   // Monitor subdirectories
+	AutoTranscode    bool                 `json:"auto_transcode"`              // Auto-transcode new videos
 	TranscodeOptions *EstTranscodeOptions `json:"transcode_options,omitempty"` // Transcode settings
 }
 
@@ -82,29 +82,29 @@ type VideoFolderMonitorResponse struct {
 
 // VideoMlQueueOptions contains options for ML-based video processing
 type VideoMlQueueOptions struct {
-	SourceFile   string `json:"source_file"`   // Source video file
-	Operation    string `json:"operation"`     // Operation: scene_detection, object_detection, etc.
-	Model        string `json:"model"`         // ML model to use
-	Confidence   float64 `json:"confidence"`   // Confidence threshold (0-1)
+	SourceFile string  `json:"source_file"` // Source video file
+	Operation  string  `json:"operation"`   // Operation: scene_detection, object_detection, etc.
+	Model      string  `json:"model"`       // ML model to use
+	Confidence float64 `json:"confidence"`  // Confidence threshold (0-1)
 }
 
 // VideoMlQueueResponse represents the response from video_ml_queue
 type VideoMlQueueResponse struct {
 	api.BaseResponse
 	Data struct {
-		JobID   string `json:"job_id"`   // ML job ID
-		Status  string `json:"status"`   // Job status
-		Message string `json:"message"`  // Status message
+		JobID   string `json:"job_id"`  // ML job ID
+		Status  string `json:"status"`  // Job status
+		Message string `json:"message"` // Status message
 	} `json:"data"`
 }
 
 // SubtitleOptions contains options for subtitle operations
 type SubtitleOptions struct {
-	SourceFile  string `json:"source_file"`  // Video file path
+	SourceFile   string `json:"source_file"`   // Video file path
 	SubtitleFile string `json:"subtitle_file"` // Subtitle file path (srt, vtt, etc.)
-	Language    string `json:"language"`     // Subtitle language
-	Encoding    string `json:"encoding"`     // Subtitle encoding
-	Offset      int    `json:"offset"`       // Subtitle offset in milliseconds
+	Language     string `json:"language"`      // Subtitle language
+	Encoding     string `json:"encoding"`      // Subtitle encoding
+	Offset       int    `json:"offset"`        // Subtitle offset in milliseconds
 }
 
 // SubtitleResponse represents the response from subtitle operations
@@ -119,10 +119,10 @@ type SubtitleResponse struct {
 
 // DiscoOptions contains options for video discovery operations
 type DiscoOptions struct {
-	Path      string `json:"path"`       // Path to scan
-	Recursive bool   `json:"recursive"`  // Scan recursively
-	FileType  string `json:"file_type"`  // File type filter (optional)
-	MetaOnly  bool   `json:"meta_only"`  // Return metadata only
+	Path      string `json:"path"`      // Path to scan
+	Recursive bool   `json:"recursive"` // Scan recursively
+	FileType  string `json:"file_type"` // File type filter (optional)
+	MetaOnly  bool   `json:"meta_only"` // Return metadata only
 }
 
 // DiscoResponse represents the response from disco operations
@@ -137,15 +137,15 @@ type DiscoResponse struct {
 
 // DiscoFile represents a discovered video file
 type DiscoFile struct {
-	Path        string         `json:"path"`         // File path
-	Size        int64          `json:"size"`         // File size
-	Duration    int            `json:"duration"`     // Video duration in seconds
-	Resolution  string         `json:"resolution"`   // Video resolution
-	Bitrate     int            `json:"bitrate"`      // Video bitrate
-	Codec       string         `json:"codec"`        // Video codec
-	AudioCodec  string         `json:"audio_codec"`  // Audio codec
-	Thumbnail   string         `json:"thumbnail"`    // Thumbnail URL
-	Metadata    map[string]string `json:"metadata"`  // Additional metadata
+	Path       string            `json:"path"`        // File path
+	Size       int64             `json:"size"`        // File size
+	Duration   int               `json:"duration"`    // Video duration in seconds
+	Resolution string            `json:"resolution"`  // Video resolution
+	Bitrate    int               `json:"bitrate"`     // Video bitrate
+	Codec      string            `json:"codec"`       // Video codec
+	AudioCodec string            `json:"audio_codec"` // Audio codec
+	Thumbnail  string            `json:"thumbnail"`   // Thumbnail URL
+	Metadata   map[string]string `json:"metadata"`    // Additional metadata
 }
 
 // DryrunOptions contains options for transcode dry run
@@ -160,10 +160,10 @@ type DryrunOptions struct {
 type DryrunResponse struct {
 	api.BaseResponse
 	Data struct {
-		Feasible      bool   `json:"feasible"`       // Transcode is feasible
-		EstimatedTime int    `json:"estimated_time"` // Estimated time in seconds
-		EstimatedSize int64  `json:"estimated_size"` // Estimated output size
-		Warnings      []string `json:"warnings"`     // Warning messages
+		Feasible        bool     `json:"feasible"`        // Transcode is feasible
+		EstimatedTime   int      `json:"estimated_time"`  // Estimated time in seconds
+		EstimatedSize   int64    `json:"estimated_size"`  // Estimated output size
+		Warnings        []string `json:"warnings"`        // Warning messages
 		Recommendations []string `json:"recommendations"` // Recommendations
 	} `json:"data"`
 }
@@ -205,7 +205,7 @@ func (fs *FileStationService) EstTranscode(ctx context.Context, options *EstTran
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		api.BaseResponse
@@ -248,7 +248,7 @@ func (fs *FileStationService) KillTranscode(ctx context.Context, pid string) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -287,7 +287,7 @@ func (fs *FileStationService) DeleteTranscode(ctx context.Context, pid string) e
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -321,7 +321,7 @@ func (fs *FileStationService) GetVideoQStatus(ctx context.Context) (*VideoQueueS
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result VideoQueueStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -378,7 +378,7 @@ func (fs *FileStationService) VideoFolderMonitor(ctx context.Context, options *V
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result VideoFolderMonitorResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -423,7 +423,7 @@ func (fs *FileStationService) VideoMlQueue(ctx context.Context, options *VideoMl
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result VideoMlQueueResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -476,7 +476,7 @@ func (fs *FileStationService) Subtitle(ctx context.Context, operation string, op
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result SubtitleResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -526,7 +526,7 @@ func (fs *FileStationService) Disco(ctx context.Context, operation string, optio
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result DiscoResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -573,7 +573,7 @@ func (fs *FileStationService) Dryrun(ctx context.Context, options *DryrunOptions
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result DryrunResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

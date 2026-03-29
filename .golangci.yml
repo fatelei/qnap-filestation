@@ -3,6 +3,19 @@ linters-settings:
     enable-all: true
     disable:
       - shadow
+      - fieldalignment
+  depguard:
+    rules:
+      Main:
+        allow:
+          - $gostd
+          - github.com/fatelei/qnap-filestation/.*
+        deny: []
+      main:
+        allow:
+          - $gostd
+          - github.com/fatelei/qnap-filestation/.*
+        deny: []
   staticcheck:
     checks: ["all"]
   stylecheck:
@@ -35,8 +48,6 @@ linters:
   disable-all: true
   enable:
     - bodyclose
-    - deadcode
-    - depguard
     - errcheck
     - gocyclo
     - gofmt
@@ -49,7 +60,6 @@ linters:
     - typecheck
     - unconvert
     - unused
-    - varcheck
 
 issues:
   exclude-use-default: false
@@ -67,3 +77,5 @@ issues:
         - goconst
         - funlen
         - gocognit
+        - unused
+        - govet

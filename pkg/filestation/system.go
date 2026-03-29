@@ -34,7 +34,7 @@ func (fs *FileStationService) CheckSession(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result CheckSessionResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -82,7 +82,7 @@ func (fs *FileStationService) GetFileSize(ctx context.Context, paths []string) (
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetFileSizeResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -155,7 +155,7 @@ func (fs *FileStationService) GetTree(ctx context.Context, options *GetTreeOptio
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetTreeResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -225,7 +225,7 @@ func (fs *FileStationService) GetUserGroupList(ctx context.Context, userType Use
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetUserGroupListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -279,7 +279,7 @@ func (fs *FileStationService) GetSysSetting(ctx context.Context) (*SysSetting, e
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetSysSettingResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -329,7 +329,7 @@ func (fs *FileStationService) GetVolumeLockStatus(ctx context.Context) (*GetVolu
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetVolumeLockStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -370,7 +370,7 @@ func (fs *FileStationService) Stat(ctx context.Context, path string) (*File, err
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result StatResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -423,7 +423,7 @@ func (fs *FileStationService) MediaFolderList(ctx context.Context) (*MediaFolder
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result MediaFolderListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

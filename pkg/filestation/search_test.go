@@ -15,9 +15,9 @@ import (
 
 // MockClient wraps an api.Client with test server support
 type MockClient struct {
-	client   *api.Client
-	server   *httptest.Server
-	handler  http.HandlerFunc
+	client  *api.Client
+	server  *httptest.Server
+	handler http.HandlerFunc
 }
 
 // NewMockClient creates a new mock client for testing
@@ -192,8 +192,8 @@ func TestSearch_Success(t *testing.T) {
 			name: "search with minimum size filter",
 			path: "/share/public",
 			options: &SearchOptions{
-				Pattern:  "large",
-				SizeMin:  1048576, // 1MB
+				Pattern: "large",
+				SizeMin: 1048576, // 1MB
 			},
 			response: `{
 				"total": 1,
@@ -254,8 +254,8 @@ func TestSearch_Success(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "search with nil options",
-			path: "/share/public",
+			name:    "search with nil options",
+			path:    "/share/public",
 			options: nil,
 			response: `{
 				"total": 3,
@@ -554,8 +554,8 @@ func TestSearchAsync_Success(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "async search with nil options",
-			path: "/share/public",
+			name:    "async search with nil options",
+			path:    "/share/public",
 			options: nil,
 			response: `{
 				"status": 1,
@@ -637,10 +637,10 @@ func TestSearchAsync_AuthError(t *testing.T) {
 // TestSearchAsync_APIErrors tests API error responses for async search
 func TestSearchAsync_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -929,10 +929,10 @@ func TestGetSearchResult_AuthError(t *testing.T) {
 // TestGetSearchResult_APIErrors tests API error responses
 func TestGetSearchResult_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -1135,10 +1135,10 @@ func TestStopSearch_AuthError(t *testing.T) {
 // TestStopSearch_APIErrors tests API error responses
 func TestStopSearch_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -1262,11 +1262,11 @@ func TestFileTypeMapping(t *testing.T) {
 // TestSizeFilterParameterMapping tests size filter parameter mapping
 func TestSizeFilterParameterMapping(t *testing.T) {
 	tests := []struct {
-		name            string
-		sizeMin         int64
-		sizeMax         int64
-		expectedType    string
-		expectedSize    string
+		name         string
+		sizeMin      int64
+		sizeMax      int64
+		expectedType string
+		expectedSize string
 	}{
 		{
 			name:         "minimum size filter",
@@ -1826,13 +1826,13 @@ func TestResponseBodyClose(t *testing.T) {
 		http.DefaultTransport = originalTransport
 	}()
 
-cfg := &api.Config{
+	cfg := &api.Config{
 		Host:     strings.TrimPrefix(server.URL, "http://"),
 		Insecure: true,
 		Username: "admin",
 		Password: "password",
-}
-client, _ := api.NewClient(cfg)
+	}
+	client, _ := api.NewClient(cfg)
 	client.SetSID("test-sid")
 
 	// Override the client's HTTP client with our custom transport
@@ -1856,7 +1856,7 @@ client, _ := api.NewClient(cfg)
 
 // Helper types for body close testing
 type roundTripperWrapper struct {
-	transport http.RoundTripper
+	transport  http.RoundTripper
 	onResponse func(*http.Response)
 }
 

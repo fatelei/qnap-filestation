@@ -66,7 +66,11 @@ func (fs *FileStationService) DownloadFile(ctx context.Context, remotePath, loca
 	if err != nil {
 		return api.WrapAPIError(api.ErrNetwork, "download request failed", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	if resp.StatusCode != 200 {
 		return api.NewAPIError(api.ErrUnknown, fmt.Sprintf("download failed with status %d", resp.StatusCode))
@@ -82,7 +86,11 @@ func (fs *FileStationService) DownloadFile(ctx context.Context, remotePath, loca
 	if err != nil {
 		return api.WrapAPIError(api.ErrUnknown, "failed to create local file", err)
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	if _, err := io.Copy(file, resp.Body); err != nil {
 		return api.WrapAPIError(api.ErrUnknown, "failed to download file", err)
@@ -130,7 +138,9 @@ func (fs *FileStationService) DownloadReader(ctx context.Context, remotePath str
 	}
 
 	if resp.StatusCode != 200 {
-		resp.Body.Close()
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
 		return nil, 0, api.NewAPIError(api.ErrUnknown, fmt.Sprintf("download failed with status %d", resp.StatusCode))
 	}
 
@@ -163,7 +173,11 @@ func (fs *FileStationService) DownloadFileAsync(ctx context.Context, remotePath 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result DownloadResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -179,4 +193,3 @@ func (fs *FileStationService) DownloadFileAsync(ctx context.Context, remotePath 
 
 	return &result, nil
 }
-

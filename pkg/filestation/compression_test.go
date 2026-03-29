@@ -1836,19 +1836,19 @@ func TestGetExtractList_Success(t *testing.T) {
 				"success": 1,
 				"datas": []map[string]interface{}{
 					{
-						"filename":  "file1.txt",
-						"filesize":  int64(1024),
-						"isfolder":  0,
+						"filename": "file1.txt",
+						"filesize": int64(1024),
+						"isfolder": 0,
 					},
 					{
-						"filename":  "folder1",
-						"filesize":  int64(0),
-						"isfolder":  1,
+						"filename": "folder1",
+						"filesize": int64(0),
+						"isfolder": 1,
 					},
 					{
-						"filename":  "file2.dat",
-						"filesize":  int64(2048),
-						"isfolder":  0,
+						"filename": "file2.dat",
+						"filesize": int64(2048),
+						"isfolder": 0,
 					},
 				},
 			})
@@ -2005,9 +2005,9 @@ func TestGetExtractList_LargeArchive(t *testing.T) {
 			datas := make([]map[string]interface{}, 100)
 			for i := 0; i < 100; i++ {
 				datas[i] = map[string]interface{}{
-					"filename":  fmt.Sprintf("file%d.txt", i),
-					"filesize":  int64((i + 1) * 1024),
-					"isfolder":  0,
+					"filename": fmt.Sprintf("file%d.txt", i),
+					"filesize": int64((i + 1) * 1024),
+					"isfolder": 0,
 				}
 			}
 

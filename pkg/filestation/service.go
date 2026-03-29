@@ -1,7 +1,6 @@
 package filestation
 
 import (
-
 	"github.com/fatelei/qnap-filestation/pkg/api"
 )
 

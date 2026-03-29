@@ -818,9 +818,9 @@ func TestSIDThreadSafety(t *testing.T) {
 // TestGetSetSID tests basic get/set SID operations
 func TestGetSetSID(t *testing.T) {
 	tests := []struct {
-		name     string
-		setSID   string
-		wantSID  string
+		name    string
+		setSID  string
+		wantSID string
 	}{
 		{
 			name:    "set and get empty SID",
@@ -1072,18 +1072,18 @@ func TestClientLogin_RequestHeaders(t *testing.T) {
 // TestNewClient_TLSConfig tests TLS configuration
 func TestNewClient_TLSConfig(t *testing.T) {
 	tests := []struct {
-		name                  string
-		insecure              bool
+		name                   string
+		insecure               bool
 		wantInsecureSkipVerify bool
 	}{
 		{
-			name:                  "secure connection",
-			insecure:              false,
+			name:                   "secure connection",
+			insecure:               false,
 			wantInsecureSkipVerify: false,
 		},
 		{
-			name:                  "insecure connection",
-			insecure:              true,
+			name:                   "insecure connection",
+			insecure:               true,
 			wantInsecureSkipVerify: true,
 		},
 	}
@@ -1113,8 +1113,8 @@ func TestNewClient_TLSConfig(t *testing.T) {
 // TestClientLogin_PasswordEncoding verifies password is base64 encoded correctly
 func TestClientLogin_PasswordEncoding(t *testing.T) {
 	passwords := []struct {
-		plain     string
-		encoded   string
+		plain   string
+		encoded string
 	}{
 		{"simple", "c2ltcGxl"},
 		{"with spaces", "d2l0aCBzcGFjZXM="},

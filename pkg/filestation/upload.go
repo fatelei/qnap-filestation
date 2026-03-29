@@ -44,12 +44,12 @@ type ChunkedUploadStartResponse struct {
 type ChunkedUploadStatusResponse struct {
 	api.BaseResponse
 	Data struct {
-		UploadID  string `json:"upload_id"`
-		Status    string `json:"status"`
-		Offset    int64  `json:"offset"`
-		Size      int64  `json:"size"`
-		FilePath  string `json:"file_path"`
-		FileName  string `json:"file_name"`
+		UploadID string `json:"upload_id"`
+		Status   string `json:"status"`
+		Offset   int64  `json:"offset"`
+		Size     int64  `json:"size"`
+		FilePath string `json:"file_path"`
+		FileName string `json:"file_name"`
 	} `json:"data"`
 }
 
@@ -61,7 +61,11 @@ func (fs *FileStationService) UploadFile(ctx context.Context, localPath, destPat
 	if err != nil {
 		return nil, api.WrapAPIError(api.ErrUnknown, "failed to open local file", err)
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	fileInfo, err := file.Stat()
 	if err != nil {
@@ -115,7 +119,11 @@ func (fs *FileStationService) UploadReader(ctx context.Context, reader io.Reader
 	if err != nil {
 		return nil, err
 	}
-	defer req.Body.Close()
+	defer func() {
+		if cerr := req.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	// Set content type header
 	req.Request.Header.Set("Content-Type", writer.FormDataContentType())
@@ -156,7 +164,11 @@ func (fs *FileStationService) StartChunkedUpload(ctx context.Context, uploadRoot
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result ChunkedUploadStartResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -200,7 +212,11 @@ func (fs *FileStationService) ChunkedUpload(ctx context.Context, uploadID string
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -238,7 +254,11 @@ func (fs *FileStationService) GetChunkedUpload(ctx context.Context, uploadID str
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result ChunkedUploadStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -275,7 +295,11 @@ func (fs *FileStationService) DeleteChunkedUploadFile(ctx context.Context, uploa
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

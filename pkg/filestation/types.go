@@ -7,17 +7,17 @@ import (
 
 // File represents a file in QNAP File Station
 type File struct {
-	FileName   string `json:"filename"`     // File name
-	IsFolder   int    `json:"isfolder"`     // 0=file, 1=folder
-	FileSize   string `json:"filesize"`     // File size in bytes (string)
-	Owner      string `json:"owner"`        // Owner name
-	Group      string `json:"group"`        // Group name
-	Privilege  string `json:"privilege"`    // File permissions
-	MT         string `json:"mt"`           // Modified time
-	EpochMT    int64  `json:"epochmt"`      // Epoch modified time
-	Exist      int    `json:"exist"`        // File exists
-	FileType   int    `json:"filetype"`     // File type
-	Path       string `json:"path,omitempty"` // File path
+	FileName  string `json:"filename"`       // File name
+	IsFolder  int    `json:"isfolder"`       // 0=file, 1=folder
+	FileSize  string `json:"filesize"`       // File size in bytes (string)
+	Owner     string `json:"owner"`          // Owner name
+	Group     string `json:"group"`          // Group name
+	Privilege string `json:"privilege"`      // File permissions
+	MT        string `json:"mt"`             // Modified time
+	EpochMT   int64  `json:"epochmt"`        // Epoch modified time
+	Exist     int    `json:"exist"`          // File exists
+	FileType  int    `json:"filetype"`       // File type
+	Path      string `json:"path,omitempty"` // File path
 }
 
 // Name returns the file name (for compatibility)
@@ -31,7 +31,7 @@ func (f *File) Size() int64 {
 		return 0
 	}
 	var size int64
-	fmt.Sscanf(f.FileSize, "%d", &size)
+	_, _ = fmt.Sscanf(f.FileSize, "%d", &size)
 	return size
 }
 
@@ -106,24 +106,24 @@ type SearchOptions struct {
 
 // UploadProgress reports upload progress
 type UploadProgress struct {
-	Total      int64
+	Total       int64
 	Transferred int64
-	Percentage float64
+	Percentage  float64
 }
 
 // DownloadProgress reports download progress
 type DownloadProgress struct {
-	Total      int64
+	Total       int64
 	Transferred int64
-	Percentage float64
+	Percentage  float64
 }
 
 // CompressOptions contains options for compression operations
 type CompressOptions struct {
-	SourceFiles []string // List of source files to compress
-	SourcePath  string   // Source directory path
-	CompressName string  // Name of the compressed archive
-	Level       int      // Compression level (optional)
+	SourceFiles  []string // List of source files to compress
+	SourcePath   string   // Source directory path
+	CompressName string   // Name of the compressed archive
+	Level        int      // Compression level (optional)
 }
 
 // ExtractOptions contains options for extraction operations
@@ -136,25 +136,25 @@ type ExtractOptions struct {
 
 // CompressStatus represents the status of a compression operation
 type CompressStatus struct {
-	PID        string  `json:"pid"`         // Process ID
-	Status     string  `json:"status"`      // Status: running, finished, failed
-	Progress   float64 `json:"progress"`    // Progress percentage (0-100)
-	SourcePath string  `json:"source_path"` // Source file path
-	DestPath   string  `json:"dest_path"`   // Destination archive path
-	FileSize   int64   `json:"file_size"`   // Total file size
-	Processed  int64   `json:"processed"`   // Processed bytes
+	PID        string  `json:"pid"`             // Process ID
+	Status     string  `json:"status"`          // Status: running, finished, failed
+	Progress   float64 `json:"progress"`        // Progress percentage (0-100)
+	SourcePath string  `json:"source_path"`     // Source file path
+	DestPath   string  `json:"dest_path"`       // Destination archive path
+	FileSize   int64   `json:"file_size"`       // Total file size
+	Processed  int64   `json:"processed"`       // Processed bytes
 	Error      string  `json:"error,omitempty"` // Error message if failed
 }
 
 // ExtractStatus represents the status of an extraction operation
 type ExtractStatus struct {
-	PID         string  `json:"pid"`          // Process ID
-	Status      string  `json:"status"`       // Status: running, finished, failed
-	Progress    float64 `json:"progress"`     // Progress percentage (0-100)
-	ExtractFile string  `json:"extract_file"` // Archive being extracted
-	DestPath    string  `json:"dest_path"`    // Destination path
-	FileCount   int     `json:"file_count"`   // Total file count
-	Processed   int     `json:"processed"`    // Processed files
+	PID         string  `json:"pid"`             // Process ID
+	Status      string  `json:"status"`          // Status: running, finished, failed
+	Progress    float64 `json:"progress"`        // Progress percentage (0-100)
+	ExtractFile string  `json:"extract_file"`    // Archive being extracted
+	DestPath    string  `json:"dest_path"`       // Destination path
+	FileCount   int     `json:"file_count"`      // Total file count
+	Processed   int     `json:"processed"`       // Processed files
 	Error       string  `json:"error,omitempty"` // Error message if failed
 }
 
@@ -193,23 +193,23 @@ type ACLControl struct {
 
 // ACLControlResponse represents the response from get_acl_control
 type ACLControlResponse struct {
-	Status int         `json:"status"`
-	Data   ACLControl  `json:"data"`
+	Status int        `json:"status"`
+	Data   ACLControl `json:"data"`
 }
 
 // ACLUser represents a user in ACL user/group list
 type ACLUser struct {
-	Name      string `json:"name"`      // User name
-	Domain    string `json:"domain"`    // Domain
-	FullName  string `json:"fullname"`  // Full display name
-	IsAdmin   bool   `json:"isadmin"`   // Is admin user
+	Name     string `json:"name"`     // User name
+	Domain   string `json:"domain"`   // Domain
+	FullName string `json:"fullname"` // Full display name
+	IsAdmin  bool   `json:"isadmin"`  // Is admin user
 }
 
 // ACLGroup represents a group in ACL user/group list
 type ACLGroup struct {
-	Name      string `json:"name"`      // Group name
-	Domain    string `json:"domain"`    // Domain
-	Desc      string `json:"desc"`      // Group description
+	Name   string `json:"name"`   // Group name
+	Domain string `json:"domain"` // Domain
+	Desc   string `json:"desc"`   // Group description
 }
 
 // ACLUserGroupList represents list of users and groups
@@ -243,17 +243,17 @@ type SetPrivilegeOptions struct {
 
 // AccessRight represents access rights for a file/folder
 type AccessRight struct {
-	Path       string `json:"path"`       // File/folder path
-	IsFolder   bool   `json:"isfolder"`   // True for folder, false for file
-	Owner      string `json:"owner"`      // Owner name
-	Group      string `json:"group"`      // Group name
-	Permission string `json:"permission"` // Permission string (e.g., "rwxr-xr-x")
-	ACLEnabled bool   `json:"acl_enabled"` // ACL enabled
-	ACLs       []ACLEntry `json:"acls"`    // ACL entries if enabled
+	Path       string     `json:"path"`        // File/folder path
+	IsFolder   bool       `json:"isfolder"`    // True for folder, false for file
+	Owner      string     `json:"owner"`       // Owner name
+	Group      string     `json:"group"`       // Group name
+	Permission string     `json:"permission"`  // Permission string (e.g., "rwxr-xr-x")
+	ACLEnabled bool       `json:"acl_enabled"` // ACL enabled
+	ACLs       []ACLEntry `json:"acls"`        // ACL entries if enabled
 }
 
 // AccessRightResponse represents the response from get_access_right
 type AccessRightResponse struct {
-	Status int          `json:"status"`
-	Data   AccessRight  `json:"data"`
+	Status int         `json:"status"`
+	Data   AccessRight `json:"data"`
 }

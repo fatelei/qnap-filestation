@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
 
 // setupSystemTestClient creates a test client with mock server for system tests
@@ -73,12 +73,12 @@ func setupUnauthenticatedSystemClient(t *testing.T) *api.Client {
 // TestCheckSession tests the CheckSession function
 func TestCheckSession(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		wantValid      bool
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		wantValid     bool
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "valid session",
@@ -230,14 +230,14 @@ func TestCheckSession_NotAuthenticated(t *testing.T) {
 // TestGetFileSize tests the GetFileSize function
 func TestGetFileSize(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		paths          []string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		wantTotalSize  int64
-		wantFileCount  int
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		paths         []string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		wantTotalSize int64
+		wantFileCount int
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "single file size",
@@ -490,13 +490,13 @@ func TestGetFileSize_NotAuthenticated(t *testing.T) {
 // TestGetTree tests the GetTree function
 func TestGetTree(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *GetTreeOptions
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		wantNodeCount  int
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *GetTreeOptions
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		wantNodeCount int
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "get tree without options",
@@ -932,9 +932,9 @@ func TestGetUserGroupList(t *testing.T) {
 					"error_msg":  "Invalid parameters",
 				},
 			},
-			userType:     UserGroupTypeUser,
-			wantErr:      true,
-			expectedErr:  api.ErrInvalidParams,
+			userType:    UserGroupTypeUser,
+			wantErr:     true,
+			expectedErr: api.ErrInvalidParams,
 		},
 		{
 			name: "invalid JSON response",
@@ -942,9 +942,9 @@ func TestGetUserGroupList(t *testing.T) {
 				StatusCode: http.StatusOK,
 				Body:       "invalid json{{{",
 			},
-			userType:     UserGroupTypeUser,
-			wantErr:      true,
-			expectedErr:  api.ErrUnknown,
+			userType:    UserGroupTypeUser,
+			wantErr:     true,
+			expectedErr: api.ErrUnknown,
 		},
 		{
 			name: "network error",
@@ -962,7 +962,7 @@ func TestGetUserGroupList(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"users":  make([]interface{}, 100),
+						"users": make([]interface{}, 100),
 						"total": 100,
 					},
 				},
@@ -1059,8 +1059,8 @@ func TestGetSysSetting(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"hostname":      "qnap-nas",
-						"domain":        "local",
+						"hostname":     "qnap-nas",
+						"domain":       "local",
 						"workgroup":    "WORKGROUP",
 						"timezone":     "UTC",
 						"language":     "en",
@@ -1138,10 +1138,10 @@ func TestGetSysSetting(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"hostname":      "nas",
-						"enable_https":  false,
-						"admin_port":    8080,
-						"https_port":    0,
+						"hostname":     "nas",
+						"enable_https": false,
+						"admin_port":   8080,
+						"https_port":   0,
 					},
 				},
 			},
@@ -1253,13 +1253,13 @@ func TestGetSysSetting_NotAuthenticated(t *testing.T) {
 // TestGetVolumeLockStatus tests the GetVolumeLockStatus function
 func TestGetVolumeLockStatus(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		wantErr        bool
-		expectedErr    api.ErrorCode
+		name            string
+		mockResponse    testutil.MockResponse
+		wantErr         bool
+		expectedErr     api.ErrorCode
 		wantVolumeCount int
-		assertResponse func(*testing.T, *GetVolumeLockStatusResponse)
-		assertRequest  func(*testing.T, *http.Request)
+		assertResponse  func(*testing.T, *GetVolumeLockStatusResponse)
+		assertRequest   func(*testing.T, *http.Request)
 	}{
 		{
 			name: "volumes unlocked",
@@ -1507,7 +1507,7 @@ func TestStat(t *testing.T) {
 				StatusCode: http.StatusOK,
 				Body: map[string]interface{}{
 					"success": 1,
-"data": File{
+					"data": File{
 						FileName: "test.txt",
 						Path:     "/home/test.txt",
 						FileSize: "1024",
@@ -1544,7 +1544,7 @@ func TestStat(t *testing.T) {
 				StatusCode: http.StatusOK,
 				Body: map[string]interface{}{
 					"success": 1,
-"data": File{
+					"data": File{
 						FileName: "documents",
 						Path:     "/home/documents",
 						FileSize: "0",
@@ -1646,7 +1646,7 @@ func TestStat(t *testing.T) {
 				StatusCode: http.StatusInternalServerError,
 				Error:      "internal server error",
 			},
-			path:   "/home/file.txt",
+			path:    "/home/file.txt",
 			wantErr: true,
 		},
 		{
@@ -1734,13 +1734,13 @@ func TestStat_NotAuthenticated(t *testing.T) {
 // TestMediaFolderList tests the MediaFolderList function
 func TestMediaFolderList(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		wantErr        bool
-		expectedErr    api.ErrorCode
+		name            string
+		mockResponse    testutil.MockResponse
+		wantErr         bool
+		expectedErr     api.ErrorCode
 		wantFolderCount int
-		assertResponse func(*testing.T, *MediaFolderListResponse)
-		assertRequest  func(*testing.T, *http.Request)
+		assertResponse  func(*testing.T, *MediaFolderListResponse)
+		assertRequest   func(*testing.T, *http.Request)
 	}{
 		{
 			name: "get media folders",
@@ -1880,7 +1880,7 @@ func TestMediaFolderList(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"folders":  make([]interface{}, 50),
+						"folders": make([]interface{}, 50),
 						"total":   50,
 					},
 				},
@@ -2009,7 +2009,7 @@ func BenchmarkCheckSession(b *testing.B) {
 // TestContextCancellation_System tests context cancellation for system methods
 func TestContextCancellation_System(t *testing.T) {
 	tests := []struct {
-		name  string
+		name   string
 		testFn func(*testing.T, *FileStationService, context.Context)
 	}{
 		{

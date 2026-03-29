@@ -69,7 +69,7 @@ func (fs *FileStationService) GetThumb(ctx context.Context, path string, options
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetThumbResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -133,7 +133,7 @@ func (fs *FileStationService) ForceThumb(ctx context.Context, path string, optio
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result ForceThumbResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -199,7 +199,7 @@ func (fs *FileStationService) RemoteThumb(ctx context.Context, url string, optio
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result RemoteThumbResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -242,7 +242,7 @@ func (fs *FileStationService) SupportPdfThumb(ctx context.Context) (*SupportPdfT
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result SupportPdfThumbResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -313,7 +313,7 @@ func (fs *FileStationService) GetSupportPdfThumb(ctx context.Context, path strin
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetSupportPdfThumbResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -371,7 +371,7 @@ func (fs *FileStationService) EnableThumbnail(ctx context.Context, options *Enab
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result EnableThumbnailResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -431,7 +431,7 @@ func (fs *FileStationService) SetSmbThumb(ctx context.Context, options *SetSmbTh
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result SetSmbThumbResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -483,7 +483,7 @@ func (fs *FileStationService) GetViewer(ctx context.Context) (*GetViewerResponse
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetViewerResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -533,7 +533,7 @@ func (fs *FileStationService) GetViewerSupportFormat(ctx context.Context) (*GetV
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetViewerSupportFormatResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -597,7 +597,7 @@ func (fs *FileStationService) GetTextFile(ctx context.Context, path string, opti
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetTextFileResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -658,7 +658,7 @@ func (fs *FileStationService) SaveTextFile(ctx context.Context, path, content st
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result SaveTextFileResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

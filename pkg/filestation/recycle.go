@@ -69,7 +69,7 @@ func (fs *FileStationService) TrashRecovery(ctx context.Context, sourcePath stri
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result TrashRecoveryResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -117,7 +117,7 @@ func (fs *FileStationService) CancelTrashRecovery(ctx context.Context, taskID st
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result CancelTrashRecoveryResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -179,7 +179,7 @@ func (fs *FileStationService) GetRecycleBinStatus(ctx context.Context, options *
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetRecycleBinStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -231,7 +231,7 @@ func (fs *FileStationService) EmptyTrash(ctx context.Context, options *EmptyTras
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result EmptyTrashResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -291,7 +291,7 @@ func (fs *FileStationService) SetDeletePermanently(ctx context.Context, options 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result SetDeletePermanentlyResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -348,7 +348,7 @@ func (fs *FileStationService) GetDeleteStatus(ctx context.Context, options *GetD
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetDeleteStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

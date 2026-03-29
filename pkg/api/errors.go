@@ -15,16 +15,16 @@ const (
 	ErrInvalidParams  ErrorCode = 1003
 
 	// File operation errors
-	ErrNotFound       ErrorCode = 2001
-	ErrAlreadyExists  ErrorCode = 2002
-	ErrPermission     ErrorCode = 2003
-	ErrInvalidPath    ErrorCode = 2004
-	ErrNotEmpty       ErrorCode = 2005
-	ErrQuotaExceeded  ErrorCode = 2006
+	ErrNotFound      ErrorCode = 2001
+	ErrAlreadyExists ErrorCode = 2002
+	ErrPermission    ErrorCode = 2003
+	ErrInvalidPath   ErrorCode = 2004
+	ErrNotEmpty      ErrorCode = 2005
+	ErrQuotaExceeded ErrorCode = 2006
 
 	// Network errors
-	ErrNetwork        ErrorCode = 3001
-	ErrTimeout        ErrorCode = 3002
+	ErrNetwork ErrorCode = 3001
+	ErrTimeout ErrorCode = 3002
 )
 
 // APIError represents an error returned by the QNAP API

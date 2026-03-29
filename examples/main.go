@@ -14,10 +14,10 @@ func main() {
 	// Create client configuration
 	config := &api.Config{
 		Host:     "192.168.1.100", // Your QNAP IP
-		Port:     8080,             // QNAP port
-		Username: "admin",          // Your username
-		Password: "password",       // Your password
-		Insecure: true,             // Set to false if using valid certificate
+		Port:     8080,            // QNAP port
+		Username: "admin",         // Your username
+		Password: "password",      // Your password
+		Insecure: true,            // Set to false if using valid certificate
 		Logger:   slog.Default(),
 	}
 

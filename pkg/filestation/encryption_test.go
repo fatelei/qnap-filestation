@@ -5,21 +5,20 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
-
 
 // TestEncryptFile tests the EncryptFile function
 func TestEncryptFile(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *EncryptOptions
-		wantPID        string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *EncryptOptions
+		wantPID       string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "encrypt single file successfully with aes256",
@@ -351,13 +350,13 @@ func TestEncryptFileAuthentication(t *testing.T) {
 // TestDecryptFile tests the DecryptFile function
 func TestDecryptFile(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *DecryptOptions
-		wantPID        string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *DecryptOptions
+		wantPID       string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "decrypt single file successfully",
@@ -604,13 +603,13 @@ func TestDecryptFileAuthentication(t *testing.T) {
 // TestCipherFile tests the CipherFile function
 func TestCipherFile(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *CipherOptions
-		wantPID        string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *CipherOptions
+		wantPID       string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "cipher encrypt action successfully",
@@ -952,13 +951,13 @@ func TestCipherFileAuthentication(t *testing.T) {
 // TestChecksumFile tests the ChecksumFile function
 func TestChecksumFile(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *ChecksumOptions
-		wantChecksum   string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *ChecksumOptions
+		wantChecksum  string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "calculate md5 checksum successfully",

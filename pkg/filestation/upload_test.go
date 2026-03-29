@@ -988,12 +988,12 @@ func TestGetChunkedUpload_Success(t *testing.T) {
 			json.NewEncoder(w).Encode(map[string]interface{}{
 				"success": 1,
 				"data": map[string]interface{}{
-					"upload_id":  "upload-session-12345",
-					"status":     "uploading",
-					"offset":     1024,
-					"size":       1024000,
-					"file_path":  "/home/uploads",
-					"file_name":  "large_file.bin",
+					"upload_id": "upload-session-12345",
+					"status":    "uploading",
+					"offset":    1024,
+					"size":      1024000,
+					"file_path": "/home/uploads",
+					"file_name": "large_file.bin",
 				},
 			})
 			return
@@ -1703,12 +1703,12 @@ func TestGetChunkedUpload_CompletedStatus(t *testing.T) {
 			json.NewEncoder(w).Encode(map[string]interface{}{
 				"success": 1,
 				"data": map[string]interface{}{
-					"upload_id":  "completed-upload-123",
-					"status":     "completed",
-					"offset":     1024000,
-					"size":       1024000,
-					"file_path":  "/home/uploads",
-					"file_name":  "completed_file.bin",
+					"upload_id": "completed-upload-123",
+					"status":    "completed",
+					"offset":    1024000,
+					"size":      1024000,
+					"file_path": "/home/uploads",
+					"file_name": "completed_file.bin",
 				},
 			})
 			return

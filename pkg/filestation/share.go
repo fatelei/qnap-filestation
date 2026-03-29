@@ -36,7 +36,7 @@ func (fs *FileStationService) ListShareLinks(ctx context.Context) ([]ShareLink, 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var listResp ShareListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&listResp); err != nil {
@@ -97,7 +97,7 @@ func (fs *FileStationService) CreateShareLink(ctx context.Context, path string, 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var createResp QNAPShareCreateResponse
 	if err := json.NewDecoder(resp.Body).Decode(&createResp); err != nil {
@@ -132,7 +132,7 @@ func (fs *FileStationService) DeleteShareLink(ctx context.Context, shareName str
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -193,7 +193,7 @@ func (fs *FileStationService) UpdateShareLink(ctx context.Context, options *Upda
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result UpdateShareLinkResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -236,7 +236,7 @@ func (fs *FileStationService) GetShareList(ctx context.Context) ([]ShareLink, er
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetShareListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -289,7 +289,7 @@ func (fs *FileStationService) GetShareSublist(ctx context.Context, shareName str
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetShareSublistResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -340,7 +340,7 @@ func (fs *FileStationService) AddShareSublist(ctx context.Context, options *AddS
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -376,7 +376,7 @@ func (fs *FileStationService) DeleteShareSublist(ctx context.Context, shareName,
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -429,7 +429,7 @@ func (fs *FileStationService) ShareAccessControl(ctx context.Context, options *S
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -484,7 +484,7 @@ func (fs *FileStationService) SendShareMail(ctx context.Context, options *SendSh
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -534,7 +534,7 @@ func (fs *FileStationService) GetPersonalMailList(ctx context.Context) ([]MailCo
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetPersonalMailListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -577,7 +577,7 @@ func (fs *FileStationService) GetSharedWithMe(ctx context.Context) ([]ShareLink,
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetSharedWithMeResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -618,7 +618,7 @@ func (fs *FileStationService) GetShareLinkInfo(ctx context.Context, shareName st
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetShareLinkInfoResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -662,7 +662,7 @@ func (fs *FileStationService) SetShareNasUser(ctx context.Context, options *SetS
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

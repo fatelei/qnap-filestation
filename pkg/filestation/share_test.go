@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
 
 // setupTestClient creates a test client and mock server for testing
@@ -106,13 +106,13 @@ func TestCreateShareLink_Success(t *testing.T) {
 // TestCreateShareLink_TableDriven tests CreateShareLink with various scenarios
 func TestCreateShareLink_TableDriven(t *testing.T) {
 	tests := []struct {
-		name           string
-		path           string
-		mockResponse   testutil.MockResponse
-		wantURL        string
-		wantErr        bool
-		errCode        api.ErrorCode
-		checkRequest   func(*testing.T, *http.Request)
+		name         string
+		path         string
+		mockResponse testutil.MockResponse
+		wantURL      string
+		wantErr      bool
+		errCode      api.ErrorCode
+		checkRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "success with file in root",
@@ -409,9 +409,9 @@ func TestUpdateShareLink_Success(t *testing.T) {
 		Body: map[string]interface{}{
 			"success": 1,
 			"data": ShareLink{
-				ID:    "share-123",
-				URL:   "https://example.com/share/updated",
-				Name:  "Updated Share",
+				ID:      "share-123",
+				URL:     "https://example.com/share/updated",
+				Name:    "Updated Share",
 				Expires: time.Now().Add(24 * time.Hour),
 			},
 		},
@@ -700,7 +700,7 @@ func TestGetShareList_TableDriven(t *testing.T) {
 					"success": 1,
 					"data": map[string]interface{}{
 						"shares": []ShareLink{},
-						"total":   0,
+						"total":  0,
 					},
 				},
 			},
@@ -1908,7 +1908,7 @@ func TestGetSharedWithMe_TableDriven(t *testing.T) {
 					"success": 1,
 					"data": map[string]interface{}{
 						"shares": []ShareLink{},
-						"total":   0,
+						"total":  0,
 					},
 				},
 			},
@@ -2410,7 +2410,7 @@ func TestListShareLinks_TableDriven(t *testing.T) {
 					"success": 1,
 					"data": map[string]interface{}{
 						"shares": []ShareLink{},
-						"total":   0,
+						"total":  0,
 					},
 				},
 			},

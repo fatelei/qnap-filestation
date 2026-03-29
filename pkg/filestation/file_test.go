@@ -6,23 +6,22 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
-
 
 // TestListFiles tests the ListFiles function
 func TestListFiles(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		path           string
-		options        *ListOptions
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		wantFiles      int
-		wantFirstFile  string
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		path          string
+		options       *ListOptions
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		wantFiles     int
+		wantFirstFile string
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "successful file listing",
@@ -61,10 +60,10 @@ func TestListFiles(t *testing.T) {
 					"datas": []File{},
 				},
 			},
-			path:       "/empty",
-			options:    nil,
-			wantErr:    false,
-			wantFiles:  0,
+			path:      "/empty",
+			options:   nil,
+			wantErr:   false,
+			wantFiles: 0,
 		},
 		{
 			name: "list with pagination offset",
@@ -87,8 +86,8 @@ func TestListFiles(t *testing.T) {
 				Offset: 50,
 				Limit:  10,
 			},
-			wantErr:      false,
-			wantFiles:    1,
+			wantErr:       false,
+			wantFiles:     1,
 			wantFirstFile: "file50.txt",
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
@@ -118,8 +117,8 @@ func TestListFiles(t *testing.T) {
 				SortBy:    "filename",
 				SortOrder: "ASC",
 			},
-			wantErr:      false,
-			wantFiles:    3,
+			wantErr:   false,
+			wantFiles: 3,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
 				if sort := r.URL.Query().Get("sort"); sort != "filename" {
@@ -148,8 +147,8 @@ func TestListFiles(t *testing.T) {
 				SortBy:    "size",
 				SortOrder: "DESC",
 			},
-			wantErr:      false,
-			wantFiles:    3,
+			wantErr:   false,
+			wantFiles: 3,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
 				if sort := r.URL.Query().Get("sort"); sort != "size" {
@@ -173,10 +172,10 @@ func TestListFiles(t *testing.T) {
 					},
 				},
 			},
-			path:       "/home",
-			options:    nil,
-			wantErr:    false,
-			wantFiles:  3,
+			path:      "/home",
+			options:   nil,
+			wantErr:   false,
+			wantFiles: 3,
 		},
 		{
 			name: "list with all options",
@@ -196,8 +195,8 @@ func TestListFiles(t *testing.T) {
 				SortBy:    "mtime",
 				SortOrder: "DESC",
 			},
-			wantErr:      false,
-			wantFiles:    1,
+			wantErr:   false,
+			wantFiles: 1,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
 				if start := r.URL.Query().Get("start"); start != "10" {
@@ -231,9 +230,9 @@ func TestListFiles(t *testing.T) {
 				StatusCode: http.StatusInternalServerError,
 				Error:      "internal server error",
 			},
-			path:        "/home",
-			options:     nil,
-			wantErr:     true,
+			path:    "/home",
+			options: nil,
+			wantErr: true,
 		},
 	}
 
@@ -300,13 +299,13 @@ func TestListFilesAuthentication(t *testing.T) {
 // TestDeleteFiles tests the DeleteFiles function (func=delete via utilRequest.cgi)
 func TestDeleteFiles(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		sourcePath     string
-		sourceFiles    []string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		sourcePath    string
+		sourceFiles   []string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "delete single file successfully",
@@ -485,14 +484,14 @@ func TestDeleteFilesAuthentication(t *testing.T) {
 // TestRenameFileUtil tests the RenameFileUtil function (func=rename via utilRequest.cgi)
 func TestRenameFileUtil(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		path           string
-		sourceName     string
-		destName       string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		path          string
+		sourceName    string
+		destName      string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "rename file successfully",
@@ -535,27 +534,27 @@ func TestRenameFileUtil(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name:       "error when source name is empty",
-			path:       "/home",
-			sourceName: "",
-			destName:   "newname.txt",
-			wantErr:    true,
+			name:        "error when source name is empty",
+			path:        "/home",
+			sourceName:  "",
+			destName:    "newname.txt",
+			wantErr:     true,
 			expectedErr: api.ErrInvalidPath,
 		},
 		{
-			name:       "error when destination name is empty",
-			path:       "/home",
-			sourceName: "oldname.txt",
-			destName:   "",
-			wantErr:    true,
+			name:        "error when destination name is empty",
+			path:        "/home",
+			sourceName:  "oldname.txt",
+			destName:    "",
+			wantErr:     true,
 			expectedErr: api.ErrInvalidPath,
 		},
 		{
-			name:       "error when both names are empty",
-			path:       "/home",
-			sourceName: "",
-			destName:   "",
-			wantErr:    true,
+			name:        "error when both names are empty",
+			path:        "/home",
+			sourceName:  "",
+			destName:    "",
+			wantErr:     true,
 			expectedErr: api.ErrInvalidPath,
 		},
 		{
@@ -567,10 +566,10 @@ func TestRenameFileUtil(t *testing.T) {
 					"success": "true",
 				},
 			},
-			path:       "/home",
-			sourceName: "oldname.txt",
-			destName:   "newname.txt",
-			wantErr:    true,
+			path:        "/home",
+			sourceName:  "oldname.txt",
+			destName:    "newname.txt",
+			wantErr:     true,
 			expectedErr: api.ErrUnknown,
 		},
 		{
@@ -582,10 +581,10 @@ func TestRenameFileUtil(t *testing.T) {
 					"success": "false",
 				},
 			},
-			path:       "/home",
-			sourceName: "oldname.txt",
-			destName:   "newname.txt",
-			wantErr:    true,
+			path:        "/home",
+			sourceName:  "oldname.txt",
+			destName:    "newname.txt",
+			wantErr:     true,
 			expectedErr: api.ErrUnknown,
 		},
 		{
@@ -594,10 +593,10 @@ func TestRenameFileUtil(t *testing.T) {
 				StatusCode: http.StatusOK,
 				Body:       "invalid json",
 			},
-			path:       "/home",
-			sourceName: "oldname.txt",
-			destName:   "newname.txt",
-			wantErr:    true,
+			path:        "/home",
+			sourceName:  "oldname.txt",
+			destName:    "newname.txt",
+			wantErr:     true,
 			expectedErr: api.ErrUnknown,
 		},
 		{
@@ -679,14 +678,14 @@ func TestRenameFileUtilAuthentication(t *testing.T) {
 // TestCopyFilesUtil tests the CopyFilesUtil function (func=copy via utilRequest.cgi)
 func TestCopyFilesUtil(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		sourcePath     string
-		destPath       string
-		sourceFiles    []string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		sourcePath    string
+		destPath      string
+		sourceFiles   []string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "copy single file successfully",
@@ -915,14 +914,14 @@ func TestCopyFilesUtilAuthentication(t *testing.T) {
 // TestMoveFilesUtil tests the MoveFilesUtil function (func=move via utilRequest.cgi)
 func TestMoveFilesUtil(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		sourcePath     string
-		destPath       string
-		sourceFiles    []string
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		sourcePath    string
+		destPath      string
+		sourceFiles   []string
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "move single file successfully",
@@ -1220,7 +1219,7 @@ func TestFileMethodsIntegration(t *testing.T) {
 // TestContextCancellation tests context cancellation handling
 func TestContextCancellation(t *testing.T) {
 	tests := []struct {
-		name  string
+		name   string
 		testFn func(*testing.T, *FileStationService, context.Context)
 	}{
 		{

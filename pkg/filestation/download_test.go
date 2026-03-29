@@ -15,8 +15,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
 
 // setupDownloadTestClient creates a test client with mock server for download tests
@@ -95,7 +95,7 @@ func TestDownloadFile_Success(t *testing.T) {
 	}
 	newClient.SetSID("test-sid-12345")
 
-fs := NewFileStationService(newClient)
+	fs := NewFileStationService(newClient)
 
 	// Create temporary directory for download
 	tmpDir := t.TempDir()
@@ -875,8 +875,8 @@ func TestDownloadFileAsync_MultipleDownloads(t *testing.T) {
 	fs := NewFileStationService(client)
 
 	files := []struct {
-		path        string
-		downloadID  string
+		path       string
+		downloadID string
 	}{
 		{"/remote/file1.txt", "download-1"},
 		{"/remote/file2.txt", "download-2"},
@@ -1319,9 +1319,9 @@ func TestDownloadFileAsync_URLField(t *testing.T) {
 // TestDownloadProgress_Structure tests DownloadProgress structure
 func TestDownloadProgress_Structure(t *testing.T) {
 	progress := DownloadProgress{
-		Total:      1000,
+		Total:       1000,
 		Transferred: 500,
-		Percentage: 50.0,
+		Percentage:  50.0,
 	}
 
 	if progress.Total != 1000 {

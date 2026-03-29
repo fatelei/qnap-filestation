@@ -12,9 +12,9 @@ import (
 type CloudStatusResponse struct {
 	api.BaseResponse
 	Data struct {
-		IsEnabled      bool     `json:"is_enabled"`
+		IsEnabled       bool    `json:"is_enabled"`
 		ConnectedClouds []Cloud `json:"connected_clouds,omitempty"`
-		Total          int      `json:"total"`
+		Total           int     `json:"total"`
 	} `json:"data"`
 }
 
@@ -22,8 +22,8 @@ type CloudStatusResponse struct {
 type Cloud struct {
 	ID           string `json:"id"`
 	Name         string `json:"name"`
-	Type         string `json:"type"`         // e.g., "dropbox", "google_drive", "onedrive"
-	Status       string `json:"status"`       // e.g., "connected", "disconnected"
+	Type         string `json:"type"`   // e.g., "dropbox", "google_drive", "onedrive"
+	Status       string `json:"status"` // e.g., "connected", "disconnected"
 	Account      string `json:"account,omitempty"`
 	LastSyncTime string `json:"last_sync_time,omitempty"`
 }
@@ -77,10 +77,10 @@ const (
 // RemoteFolderOptions contains options for remote folder operations
 type RemoteFolderOptions struct {
 	Subfunc   RemoteFolderSubfunc `json:"subfunc"`
-	Path      string             `json:"path,omitempty"`      // Required for create_share, modify, delete
-	Name      string             `json:"name,omitempty"`      // Required for create_share, modify
-	CloudType string             `json:"cloud_type,omitempty"` // e.g., "dropbox", "google_drive"
-	ShareID   string             `json:"share_id,omitempty"`   // Required for modify, delete
+	Path      string              `json:"path,omitempty"`       // Required for create_share, modify, delete
+	Name      string              `json:"name,omitempty"`       // Required for create_share, modify
+	CloudType string              `json:"cloud_type,omitempty"` // e.g., "dropbox", "google_drive"
+	ShareID   string              `json:"share_id,omitempty"`   // Required for modify, delete
 }
 
 // RemoteFolderResponse represents the response from remote folder operations
@@ -156,8 +156,8 @@ type CloudSyncStatus struct {
 	CloudID      string  `json:"cloud_id"`
 	CloudName    string  `json:"cloud_name"`
 	CloudType    string  `json:"cloud_type"`
-	Status       string  `json:"status"`        // e.g., "syncing", "synced", "error"
-	Progress     float64 `json:"progress"`      // 0-100
+	Status       string  `json:"status"`   // e.g., "syncing", "synced", "error"
+	Progress     float64 `json:"progress"` // 0-100
 	TotalFiles   int     `json:"total_files"`
 	SyncedFiles  int     `json:"synced_files"`
 	FailedFiles  int     `json:"failed_files"`
@@ -318,9 +318,9 @@ func (fs *FileStationService) UnmountIso(ctx context.Context, mountPoint string)
 
 // MountQdffOptions contains options for mounting QDFF files
 type MountQdffOptions struct {
-	QdffPath   string `json:"qdff_path"`              // Required: path to QDFF file
-	MountPoint string `json:"mount_point,omitempty"`  // Optional: custom mount point
-	ReadOnly   bool   `json:"read_only,omitempty"`    // Optional: mount as read-only
+	QdffPath   string `json:"qdff_path"`             // Required: path to QDFF file
+	MountPoint string `json:"mount_point,omitempty"` // Optional: custom mount point
+	ReadOnly   bool   `json:"read_only,omitempty"`   // Optional: mount as read-only
 }
 
 // MountQdffResponse represents the response from mount QDFF operation
@@ -579,16 +579,16 @@ func (fs *FileStationService) GetDomainIPList(ctx context.Context) (*GetDomainIP
 
 // DomainIPEx represents extended domain IP information
 type DomainIPEx struct {
-	ID          string `json:"id"`
-	IP          string `json:"ip"`
-	Hostname    string `json:"hostname,omitempty"`
-	Status      string `json:"status"`       // e.g., "online", "offline"
-	MACAddress  string `json:"mac_address,omitempty"`
-	OS          string `json:"os,omitempty"`           // Operating system
-	Workgroup   string `json:"workgroup,omitempty"`
-	Domain      string `json:"domain,omitempty"`
-	LastSeen    string `json:"last_seen,omitempty"`
-	IsOnline    bool   `json:"is_online"`
+	ID         string `json:"id"`
+	IP         string `json:"ip"`
+	Hostname   string `json:"hostname,omitempty"`
+	Status     string `json:"status"` // e.g., "online", "offline"
+	MACAddress string `json:"mac_address,omitempty"`
+	OS         string `json:"os,omitempty"` // Operating system
+	Workgroup  string `json:"workgroup,omitempty"`
+	Domain     string `json:"domain,omitempty"`
+	LastSeen   string `json:"last_seen,omitempty"`
+	IsOnline   bool   `json:"is_online"`
 }
 
 // GetDomainIPListExOptions contains options for extended domain IP list query

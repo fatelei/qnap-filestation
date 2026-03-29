@@ -47,7 +47,7 @@ func (fs *FileStationService) DaemonList(ctx context.Context) (*DaemonListRespon
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result DaemonListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -98,7 +98,7 @@ func (fs *FileStationService) GetCayinMediaStatus(ctx context.Context) (*GetCayi
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result GetCayinMediaStatusResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -148,7 +148,7 @@ func (fs *FileStationService) QcloudNotifyInfo(ctx context.Context) (*QcloudNoti
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result QcloudNotifyInfoResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -218,7 +218,7 @@ func (fs *FileStationService) QcloudWopiUrl(ctx context.Context, options *Qcloud
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result QcloudWopiUrlResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -286,7 +286,7 @@ func (fs *FileStationService) Qdmc(ctx context.Context, options *QdmcOptions) (*
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result QdmcResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -360,7 +360,7 @@ func (fs *FileStationService) QhamRetrieve(ctx context.Context, options *QhamRet
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result QhamRetrieveResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -426,7 +426,7 @@ func (fs *FileStationService) Qrpac(ctx context.Context, options *QrpacOptions) 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result QrpacResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -498,7 +498,7 @@ func (fs *FileStationService) Hwts(ctx context.Context, options *HwtsOptions) (*
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result HwtsResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

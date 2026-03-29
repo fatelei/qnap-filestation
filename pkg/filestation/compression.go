@@ -34,10 +34,10 @@ func (fs *FileStationService) CompressFiles(ctx context.Context, options *Compre
 
 	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"func":         "compress",
-		"sid":          sid,
-		"source_file":  strings.Join(options.SourceFiles, ","),
-		"source_path":  options.SourcePath,
+		"func":          "compress",
+		"sid":           sid,
+		"source_file":   strings.Join(options.SourceFiles, ","),
+		"source_path":   options.SourcePath,
 		"compress_name": options.CompressName,
 	}
 
@@ -49,7 +49,11 @@ func (fs *FileStationService) CompressFiles(ctx context.Context, options *Compre
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var compressResp CompressResponse
 	if err := json.NewDecoder(resp.Body).Decode(&compressResp); err != nil {
@@ -88,7 +92,11 @@ func (fs *FileStationService) CancelCompress(ctx context.Context, pid string) er
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -127,7 +135,11 @@ func (fs *FileStationService) GetCompressStatus(ctx context.Context, pid string)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result struct {
 		api.BaseResponse
@@ -179,7 +191,11 @@ func (fs *FileStationService) ExtractArchive(ctx context.Context, options *Extra
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var extractResp ExtractResponse
 	if err := json.NewDecoder(resp.Body).Decode(&extractResp); err != nil {
@@ -218,7 +234,11 @@ func (fs *FileStationService) CancelExtract(ctx context.Context, pid string) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -257,7 +277,11 @@ func (fs *FileStationService) GetExtractList(ctx context.Context, archivePath st
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result struct {
 		api.BaseResponse
@@ -300,7 +324,11 @@ func (fs *FileStationService) GetExtractStatus(ctx context.Context, pid string) 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil {
+			_ = cerr
+		}
+	}()
 
 	var result struct {
 		api.BaseResponse

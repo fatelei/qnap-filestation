@@ -42,8 +42,8 @@ type Client struct {
 	config     *Config
 	logger     *slog.Logger
 
-	sid       string
-	sidMu     sync.RWMutex
+	sid   string
+	sidMu sync.RWMutex
 }
 
 // NewClient creates a new QNAP API client
@@ -157,9 +157,9 @@ func (c *Client) Login(ctx context.Context) error {
 
 	// Parse XML response
 	var result struct {
-		XMLName  xml.Name `xml:"QDocRoot"`
-		AuthSid  string   `xml:"authSid"`
-		AuthPassed string `xml:"authPassed"`
+		XMLName    xml.Name `xml:"QDocRoot"`
+		AuthSid    string   `xml:"authSid"`
+		AuthPassed string   `xml:"authPassed"`
 	}
 
 	if err := xml.NewDecoder(resp.Body).Decode(&result); err != nil {

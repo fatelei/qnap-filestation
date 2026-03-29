@@ -18,8 +18,8 @@ func (fs *FileStationService) SetACLControl(ctx context.Context, options *SetACL
 
 	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"func":     "set_acl_control",
-		"sid":      sid,
+		"func":      "set_acl_control",
+		"sid":       sid,
 		"sharename": options.ShareName,
 	}
 
@@ -43,7 +43,7 @@ func (fs *FileStationService) SetACLControl(ctx context.Context, options *SetACL
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		Status  int    `json:"status"`
@@ -83,7 +83,7 @@ func (fs *FileStationService) GetACLControl(ctx context.Context, shareName, root
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var aclResp ACLControlResponse
 	if err := json.NewDecoder(resp.Body).Decode(&aclResp); err != nil {
@@ -115,7 +115,7 @@ func (fs *FileStationService) GetACLUserGroupList(ctx context.Context, shareName
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var listResp ACLUserGroupListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&listResp); err != nil {
@@ -138,8 +138,8 @@ func (fs *FileStationService) SetPrivilege(ctx context.Context, options *SetPriv
 
 	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"func":     "set_privilege",
-		"sid":      sid,
+		"func":      "set_privilege",
+		"sid":       sid,
 		"sharename": options.ShareName,
 	}
 
@@ -164,7 +164,7 @@ func (fs *FileStationService) SetPrivilege(ctx context.Context, options *SetPriv
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		Status  int    `json:"status"`
@@ -218,7 +218,7 @@ func (fs *FileStationService) GetAccessRight(ctx context.Context, path string) (
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var accessResp AccessRightResponse
 	if err := json.NewDecoder(resp.Body).Decode(&accessResp); err != nil {
@@ -251,7 +251,7 @@ func (fs *FileStationService) SetProjectionType(ctx context.Context, shareName, 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		Status  int    `json:"status"`

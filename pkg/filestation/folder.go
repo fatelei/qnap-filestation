@@ -48,7 +48,7 @@ func (fs *FileStationService) ListFolders(ctx context.Context, path string, opti
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var listResp ListResponse
 	if err := json.NewDecoder(resp.Body).Decode(&listResp); err != nil {
@@ -98,7 +98,7 @@ func (fs *FileStationService) CreateFolder(ctx context.Context, path string) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		Status  int    `json:"status"`
@@ -135,7 +135,7 @@ func (fs *FileStationService) DeleteFolder(ctx context.Context, path string) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -172,7 +172,7 @@ func (fs *FileStationService) RenameFolder(ctx context.Context, oldPath, newPath
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result api.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

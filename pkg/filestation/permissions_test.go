@@ -292,10 +292,10 @@ func TestSetACLControl_AuthError(t *testing.T) {
 // TestSetACLControl_APIErrors tests API error responses
 func TestSetACLControl_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -356,15 +356,15 @@ func TestSetACLControl_APIErrors(t *testing.T) {
 // TestGetACLControl_Success tests successful ACL control retrieval
 func TestGetACLControl_Success(t *testing.T) {
 	tests := []struct {
-		name     string
+		name      string
 		shareName string
 		root      string
-		response string
-		want     *ACLControl
-		wantErr  bool
+		response  string
+		want      *ACLControl
+		wantErr   bool
 	}{
 		{
-			name:     "get ACL control for share",
+			name:      "get ACL control for share",
 			shareName: "public",
 			root:      "",
 			response: `{
@@ -401,7 +401,7 @@ func TestGetACLControl_Success(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:     "get ACL control with root path",
+			name:      "get ACL control with root path",
 			shareName: "public",
 			root:      "/documents",
 			response: `{
@@ -431,7 +431,7 @@ func TestGetACLControl_Success(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:     "get ACL control when disabled",
+			name:      "get ACL control when disabled",
 			shareName: "public",
 			root:      "",
 			response: `{
@@ -452,7 +452,7 @@ func TestGetACLControl_Success(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:     "get ACL control with no root specified",
+			name:      "get ACL control with no root specified",
 			shareName: "private",
 			root:      "",
 			response: `{
@@ -570,10 +570,10 @@ func TestGetACLControl_AuthError(t *testing.T) {
 // TestGetACLControl_APIErrors tests API error responses
 func TestGetACLControl_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -805,10 +805,10 @@ func TestGetACLUserGroupList_AuthError(t *testing.T) {
 // TestGetACLUserGroupList_APIErrors tests API error responses
 func TestGetACLUserGroupList_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -905,7 +905,7 @@ func TestSetPrivilege_Success(t *testing.T) {
 			name: "set privilege with path",
 			options: &SetPrivilegeOptions{
 				ShareName: "public",
-				Path:       "/documents",
+				Path:      "/documents",
 				Privileges: []PrivilegeEntry{
 					{
 						User:   "user1",
@@ -1114,10 +1114,10 @@ func TestSetPrivilege_AuthError(t *testing.T) {
 // TestSetPrivilege_APIErrors tests API error responses
 func TestSetPrivilege_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -1524,10 +1524,10 @@ func TestGetAccessRight_AuthError(t *testing.T) {
 // TestGetAccessRight_APIErrors tests API error responses
 func TestGetAccessRight_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -1691,10 +1691,10 @@ func TestSetProjectionType_AuthError(t *testing.T) {
 // TestSetProjectionType_APIErrors tests API error responses
 func TestSetProjectionType_APIErrors(t *testing.T) {
 	tests := []struct {
-		name       string
-		response   string
-		wantErr    bool
-		errMsg     string
+		name     string
+		response string
+		wantErr  bool
+		errMsg   string
 	}{
 		{
 			name:     "API returns failure status",
@@ -1779,9 +1779,9 @@ func TestBoolToInt(t *testing.T) {
 // TestACLEntrySerialization tests ACL entry serialization in various scenarios
 func TestACLEntrySerialization(t *testing.T) {
 	tests := []struct {
-		name     string
-		acls     []ACLEntry
-		verify   func(*testing.T, *http.Request)
+		name   string
+		acls   []ACLEntry
+		verify func(*testing.T, *http.Request)
 	}{
 		{
 			name: "empty ACL list",
@@ -1919,8 +1919,8 @@ func TestPrivilegeEntrySerialization(t *testing.T) {
 // TestPermissionsContextCancellation tests context cancellation handling
 func TestPermissionsContextCancellation(t *testing.T) {
 	tests := []struct {
-		name      string
-		execute   func(*FileStationService, context.Context) error
+		name    string
+		execute func(*FileStationService, context.Context) error
 	}{
 		{
 			name: "SetACLControl cancellation",

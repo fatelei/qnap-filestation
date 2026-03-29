@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
 
 // setupMediaTestClient creates a test client with mock server for media tests
@@ -93,7 +93,7 @@ func TestGetThumb(t *testing.T) {
 					},
 				},
 			},
-			path:   "/home/photo.jpg",
+			path:    "/home/photo.jpg",
 			options: nil,
 			assertResponse: func(t *testing.T, r *GetThumbResponse) {
 				t.Helper()
@@ -355,7 +355,7 @@ func TestGetThumb(t *testing.T) {
 				StatusCode: http.StatusInternalServerError,
 				Error:      "internal server error",
 			},
-			path:   "/home/photo.jpg",
+			path:    "/home/photo.jpg",
 			options: nil,
 			wantErr: true,
 		},
@@ -451,7 +451,7 @@ func TestForceThumb(t *testing.T) {
 					},
 				},
 			},
-			path:   "/home/photo.jpg",
+			path:    "/home/photo.jpg",
 			options: nil,
 			assertResponse: func(t *testing.T, r *ForceThumbResponse) {
 				t.Helper()
@@ -561,7 +561,7 @@ func TestForceThumb(t *testing.T) {
 					},
 				},
 			},
-			path:   "/home/document.pdf",
+			path:    "/home/document.pdf",
 			options: nil,
 			assertResponse: func(t *testing.T, r *ForceThumbResponse) {
 				t.Helper()
@@ -602,7 +602,7 @@ func TestForceThumb(t *testing.T) {
 				StatusCode: http.StatusInternalServerError,
 				Error:      "internal server error",
 			},
-			path:   "/home/photo.jpg",
+			path:    "/home/photo.jpg",
 			options: nil,
 			wantErr: true,
 		},
@@ -697,7 +697,7 @@ func TestRemoteThumb(t *testing.T) {
 					},
 				},
 			},
-			url:    "https://example.com/image.jpg",
+			url:     "https://example.com/image.jpg",
 			options: nil,
 			assertResponse: func(t *testing.T, r *RemoteThumbResponse) {
 				t.Helper()
@@ -1124,7 +1124,7 @@ func TestGetSupportPdfThumb(t *testing.T) {
 					},
 				},
 			},
-			path:   "/home/document.pdf",
+			path:    "/home/document.pdf",
 			options: nil,
 			assertResponse: func(t *testing.T, r *GetSupportPdfThumbResponse) {
 				t.Helper()
@@ -1312,7 +1312,7 @@ func TestGetSupportPdfThumb(t *testing.T) {
 				StatusCode: http.StatusInternalServerError,
 				Error:      "internal server error",
 			},
-			path:   "/home/document.pdf",
+			path:    "/home/document.pdf",
 			options: nil,
 			wantErr: true,
 		},
@@ -2249,7 +2249,7 @@ func TestGetTextFile(t *testing.T) {
 					},
 				},
 			},
-			path:   "/home/test.txt",
+			path:    "/home/test.txt",
 			options: nil,
 			assertResponse: func(t *testing.T, r *GetTextFileResponse) {
 				t.Helper()
@@ -2390,7 +2390,7 @@ func TestGetTextFile(t *testing.T) {
 					},
 				},
 			},
-			path:   "/home/empty.txt",
+			path:    "/home/empty.txt",
 			options: nil,
 			assertResponse: func(t *testing.T, r *GetTextFileResponse) {
 				t.Helper()
@@ -2434,7 +2434,7 @@ func TestGetTextFile(t *testing.T) {
 				StatusCode: http.StatusInternalServerError,
 				Error:      "internal server error",
 			},
-			path:   "/home/test.txt",
+			path:    "/home/test.txt",
 			options: nil,
 			wantErr: true,
 		},
@@ -2830,7 +2830,7 @@ func TestMediaMethods_TableDriven(t *testing.T) {
 // TestContextCancellation_Media tests context cancellation for media methods
 func TestContextCancellation_Media(t *testing.T) {
 	tests := []struct {
-		name  string
+		name   string
 		testFn func(*testing.T, *FileStationService, context.Context)
 	}{
 		{

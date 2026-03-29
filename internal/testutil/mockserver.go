@@ -10,21 +10,24 @@ import (
 )
 
 // MockServer is a mock HTTP server for testing
+// nolint:govet,fieldalignment // field order chosen for clarity in tests
 type MockServer struct {
-	server      *httptest.Server
-	requests    []*http.Request
-	requestsMu  sync.Mutex
-	responses   map[string]MockResponse
-	sid         string
-	authCalled  bool
+	// Order fields to reduce padding per govet fieldalignment
+	requests     []*http.Request
+	sid          string
+	responses    map[string]MockResponse
+	server       *httptest.Server
+	requestsMu   sync.Mutex
 	authCalledMu sync.Mutex
+	authCalled   bool
 }
 
 // MockResponse represents a mock response
+// nolint:govet,fieldalignment // small test struct; packing not critical
 type MockResponse struct {
-	StatusCode int
 	Body       interface{}
 	Error      string
+	StatusCode int
 }
 
 // NewMockServer creates a new mock server

@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
-
 
 // assertUnsupportedOperation checks if the response indicates an unsupported operation
 func assertUnsupportedOperation(t *testing.T, resp *UnsupportedOperationResponse, operationName string) {
@@ -31,12 +30,12 @@ func assertUnsupportedOperation(t *testing.T, resp *UnsupportedOperationResponse
 // TestDaemonList tests the DaemonList function
 func TestDaemonList(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		wantDaemons    int
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		wantDaemons   int
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "successful daemon list with multiple daemons",
@@ -285,14 +284,14 @@ func TestGetCayinMediaStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"enabled":     true,
-						"status":      "online",
-						"version":     "2.5.1",
-						"device_id":   "CAYIN-12345-ABCDE",
-						"ip_address":  "192.168.1.100",
-						"mac_address": "00:11:22:33:44:55",
-						"uptime":      "15 days 4 hours",
-						"last_sync":   "2024-01-15 10:30:00",
+						"enabled":      true,
+						"status":       "online",
+						"version":      "2.5.1",
+						"device_id":    "CAYIN-12345-ABCDE",
+						"ip_address":   "192.168.1.100",
+						"mac_address":  "00:11:22:33:44:55",
+						"uptime":       "15 days 4 hours",
+						"last_sync":    "2024-01-15 10:30:00",
 						"storage_used": "45.2 GB",
 						"description":  "Main media server",
 					},
@@ -325,14 +324,14 @@ func TestGetCayinMediaStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"enabled":     false,
-						"status":      "offline",
-						"version":     "",
-						"device_id":   "",
-						"ip_address":  "",
-						"mac_address": "",
-						"uptime":      "-",
-						"last_sync":   "",
+						"enabled":      false,
+						"status":       "offline",
+						"version":      "",
+						"device_id":    "",
+						"ip_address":   "",
+						"mac_address":  "",
+						"uptime":       "-",
+						"last_sync":    "",
 						"storage_used": "0 B",
 						"description":  "",
 					},
@@ -356,14 +355,14 @@ func TestGetCayinMediaStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"enabled":     true,
-						"status":      "error",
-						"version":     "1.0.0",
-						"device_id":   "CAYIN-ERROR-001",
-						"ip_address":  "192.168.1.200",
-						"mac_address": "AA:BB:CC:DD:EE:FF",
-						"uptime":      "0 days",
-						"last_sync":   "2024-01-01 00:00:00",
+						"enabled":      true,
+						"status":       "error",
+						"version":      "1.0.0",
+						"device_id":    "CAYIN-ERROR-001",
+						"ip_address":   "192.168.1.200",
+						"mac_address":  "AA:BB:CC:DD:EE:FF",
+						"uptime":       "0 days",
+						"last_sync":    "2024-01-01 00:00:00",
 						"storage_used": "0 B",
 						"description":  "Device in error state",
 					},
@@ -384,14 +383,14 @@ func TestGetCayinMediaStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"enabled":     false,
-						"status":      "",
-						"version":     "",
-						"device_id":   "",
-						"ip_address":  "",
-						"mac_address": "",
-						"uptime":      "",
-						"last_sync":   "",
+						"enabled":      false,
+						"status":       "",
+						"version":      "",
+						"device_id":    "",
+						"ip_address":   "",
+						"mac_address":  "",
+						"uptime":       "",
+						"last_sync":    "",
 						"storage_used": "",
 						"description":  "",
 					},
@@ -890,10 +889,10 @@ func TestQcloudWopiUrl(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"url":        "https://wopi.example.com/files/by-name",
-						"enabled":    true,
-						"version":    "1.0",
-						"discovery":  "https://wopi.example.com/hosting/discovery",
+						"url":       "https://wopi.example.com/files/by-name",
+						"enabled":   true,
+						"version":   "1.0",
+						"discovery": "https://wopi.example.com/hosting/discovery",
 					},
 				},
 			},
@@ -928,9 +927,9 @@ func TestQcloudWopiUrl(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"url":        "https://wopi.example.com/",
-						"enabled":    true,
-						"version":    "1.0",
+						"url":     "https://wopi.example.com/",
+						"enabled": true,
+						"version": "1.0",
 					},
 				},
 			},
@@ -1389,12 +1388,12 @@ func TestQhamRetrieve(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"success":     true,
-						"message":     "Items retrieved successfully",
-						"items":       []string{"item1", "item2", "item3"},
-						"count":       3,
+						"success":      true,
+						"message":      "Items retrieved successfully",
+						"items":        []string{"item1", "item2", "item3"},
+						"count":        3,
 						"cache_status": "fresh",
-						"timestamp":   "2024-01-15 15:45:00",
+						"timestamp":    "2024-01-15 15:45:00",
 					},
 				},
 			},
@@ -1447,9 +1446,9 @@ func TestQhamRetrieve(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"success":     true,
-						"items":       []string{"single-item"},
-						"count":       1,
+						"success":      true,
+						"items":        []string{"single-item"},
+						"count":        1,
 						"cache_status": "cached",
 					},
 				},
@@ -1466,9 +1465,9 @@ func TestQhamRetrieve(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"success":     true,
-						"items":       []string{},
-						"count":       0,
+						"success":      true,
+						"items":        []string{},
+						"count":        0,
 						"cache_status": "empty",
 					},
 				},
@@ -1504,10 +1503,10 @@ func TestQhamRetrieve(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"success":     true,
-						"message":     "Cache refreshed",
-						"items":       []string{"new-item"},
-						"count":       1,
+						"success":      true,
+						"message":      "Cache refreshed",
+						"items":        []string{"new-item"},
+						"count":        1,
 						"cache_status": "refreshed",
 					},
 				},
@@ -1993,9 +1992,9 @@ func TestQrpac(t *testing.T) {
 			},
 			options: &QrpacOptions{
 				Parameters: map[string]string{
-					"path":     "/folder with spaces/",
-					"unicode":  "中文",
-					"special":  "@#$%^&*()",
+					"path":    "/folder with spaces/",
+					"unicode": "中文",
+					"special": "@#$%^&*()",
 				},
 			},
 			wantErr: false,
@@ -2326,8 +2325,8 @@ func TestHwts(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"success":  true,
-						"status":   "component_ok",
+						"success":   true,
+						"status":    "component_ok",
 						"component": "memory",
 					},
 				},
@@ -2394,7 +2393,7 @@ func TestHwts(t *testing.T) {
 				},
 			},
 			options: &HwtsOptions{
-				Detail: true,
+				Detail:  true,
 				Refresh: true,
 			},
 			wantErr: false,
@@ -2741,7 +2740,7 @@ func TestUnsupportedOperationStubFunctionsWithEmptyParams(t *testing.T) {
 // TestMiscContextCancellation tests context cancellation handling for misc functions
 func TestMiscContextCancellation(t *testing.T) {
 	tests := []struct {
-		name  string
+		name   string
 		testFn func(*testing.T, *FileStationService, context.Context)
 	}{
 		{

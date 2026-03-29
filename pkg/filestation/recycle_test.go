@@ -6,10 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fatelei/qnap-filestation/pkg/api"
 	"github.com/fatelei/qnap-filestation/internal/testutil"
+	"github.com/fatelei/qnap-filestation/pkg/api"
 )
-
 
 // assertAPIErrorMessage checks if the error is an APIError with the expected message
 func assertAPIErrorMessage(t *testing.T, err error, expectedMessage string) {
@@ -253,10 +252,10 @@ func TestTrashRecovery(t *testing.T) {
 					"error_msg":  "File not found in trash",
 				},
 			},
-			sourcePath:  "/home",
-			files:       []string{"nonexistent.txt"},
-			wantErr:     true,
-			expectedErr: api.ErrNotFound,
+			sourcePath:     "/home",
+			files:          []string{"nonexistent.txt"},
+			wantErr:        true,
+			expectedErr:    api.ErrNotFound,
 			expectedErrMsg: "File not found in trash",
 		},
 		{
@@ -461,9 +460,9 @@ func TestCancelTrashRecovery(t *testing.T) {
 					"error_msg":  "Permission denied",
 				},
 			},
-			taskID:        "rec-12345",
-			wantErr:       true,
-			expectedErr:   api.ErrPermission,
+			taskID:         "rec-12345",
+			wantErr:        true,
+			expectedErr:    api.ErrPermission,
 			expectedErrMsg: "Permission denied",
 		},
 		{
@@ -578,13 +577,13 @@ func TestCancelTrashRecoveryAuthentication(t *testing.T) {
 // TestGetRecycleBinStatus tests the GetRecycleBinStatus function
 func TestGetRecycleBinStatus(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *GetRecycleBinStatusOptions
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
-		validateResp   func(*testing.T, *GetRecycleBinStatusResponse)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *GetRecycleBinStatusOptions
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
+		validateResp  func(*testing.T, *GetRecycleBinStatusResponse)
 	}{
 		{
 			name: "get recycle bin status successfully",
@@ -895,12 +894,12 @@ func TestGetRecycleBinStatusAuthentication(t *testing.T) {
 // TestEmptyTrash tests the EmptyTrash function
 func TestEmptyTrash(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *EmptyTrashOptions
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *EmptyTrashOptions
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "empty all trash successfully",
@@ -1118,12 +1117,12 @@ func TestEmptyTrashAuthentication(t *testing.T) {
 // TestSetDeletePermanently tests the SetDeletePermanently function
 func TestSetDeletePermanently(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *SetDeletePermanentlyOptions
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *SetDeletePermanentlyOptions
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
 	}{
 		{
 			name: "enable permanent delete globally",
@@ -1380,13 +1379,13 @@ func TestSetDeletePermanentlyAuthentication(t *testing.T) {
 // TestGetDeleteStatus tests the GetDeleteStatus function
 func TestGetDeleteStatus(t *testing.T) {
 	tests := []struct {
-		name           string
-		mockResponse   testutil.MockResponse
-		options        *GetDeleteStatusOptions
-		wantErr        bool
-		expectedErr    api.ErrorCode
-		assertRequest  func(*testing.T, *http.Request)
-		validateResp   func(*testing.T, *GetDeleteStatusResponse)
+		name          string
+		mockResponse  testutil.MockResponse
+		options       *GetDeleteStatusOptions
+		wantErr       bool
+		expectedErr   api.ErrorCode
+		assertRequest func(*testing.T, *http.Request)
+		validateResp  func(*testing.T, *GetDeleteStatusResponse)
 	}{
 		{
 			name: "get delete status successfully",
@@ -1395,11 +1394,11 @@ func TestGetDeleteStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"pid":         "del-12345",
-						"status":      "running",
-						"progress":    45.5,
-						"total_count": 100,
-						"processed":   45,
+						"pid":          "del-12345",
+						"status":       "running",
+						"progress":     45.5,
+						"total_count":  100,
+						"processed":    45,
 						"failed_count": 2,
 					},
 				},
@@ -1441,11 +1440,11 @@ func TestGetDeleteStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"pid":         "task-67890",
-						"status":      "finished",
-						"progress":    100.0,
-						"total_count": 50,
-						"processed":   50,
+						"pid":          "task-67890",
+						"status":       "finished",
+						"progress":     100.0,
+						"total_count":  50,
+						"processed":    50,
 						"failed_count": 0,
 					},
 				},
@@ -1468,11 +1467,11 @@ func TestGetDeleteStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"pid":         "del-finished",
-						"status":      "finished",
-						"progress":    100.0,
-						"total_count": 10,
-						"processed":   10,
+						"pid":          "del-finished",
+						"status":       "finished",
+						"progress":     100.0,
+						"total_count":  10,
+						"processed":    10,
 						"failed_count": 0,
 					},
 				},
@@ -1525,11 +1524,11 @@ func TestGetDeleteStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"pid":         "del-running",
-						"status":      "running",
-						"progress":    67.8,
-						"total_count": 1000,
-						"processed":   678,
+						"pid":          "del-running",
+						"status":       "running",
+						"progress":     67.8,
+						"total_count":  1000,
+						"processed":    678,
 						"failed_count": 5,
 					},
 				},
@@ -1544,11 +1543,11 @@ func TestGetDeleteStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"pid":         "del-nil",
-						"status":      "running",
-						"progress":    0.0,
-						"total_count": 0,
-						"processed":   0,
+						"pid":          "del-nil",
+						"status":       "running",
+						"progress":     0.0,
+						"total_count":  0,
+						"processed":    0,
 						"failed_count": 0,
 					},
 				},
@@ -1593,11 +1592,11 @@ func TestGetDeleteStatus(t *testing.T) {
 				Body: map[string]interface{}{
 					"success": 1,
 					"data": map[string]interface{}{
-						"pid":         "del-zero",
-						"status":      "running",
-						"progress":    0,
-						"total_count": 0,
-						"processed":   0,
+						"pid":          "del-zero",
+						"status":       "running",
+						"progress":     0,
+						"total_count":  0,
+						"processed":    0,
 						"failed_count": 0,
 					},
 				},
@@ -1781,11 +1780,11 @@ func TestRecycleBinWorkflow(t *testing.T) {
 			Body: map[string]interface{}{
 				"success": 1,
 				"data": map[string]interface{}{
-					"pid":         "rec-workflow",
-					"status":      "finished",
-					"progress":    100.0,
-					"total_count": 2,
-					"processed":   2,
+					"pid":          "rec-workflow",
+					"status":       "finished",
+					"progress":     100.0,
+					"total_count":  2,
+					"processed":    2,
 					"failed_count": 0,
 				},
 			},
@@ -1820,7 +1819,7 @@ func TestRecycleBinWorkflow(t *testing.T) {
 // TestContextCancellation_Recycle tests context cancellation for recycle functions
 func TestContextCancellation_Recycle(t *testing.T) {
 	tests := []struct {
-		name  string
+		name   string
 		testFn func(*testing.T, *FileStationService, context.Context)
 	}{
 		{

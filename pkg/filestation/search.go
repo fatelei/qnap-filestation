@@ -69,7 +69,7 @@ func (fs *FileStationService) Search(ctx context.Context, path string, options *
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var searchResp SearchResponse
 	if err := json.NewDecoder(resp.Body).Decode(&searchResp); err != nil {
@@ -88,10 +88,10 @@ func (fs *FileStationService) SearchByPattern(ctx context.Context, path, pattern
 
 // SearchResult represents the response from async search operations
 type SearchResult struct {
-	PID     string `json:"pid"`      // Process ID for async operation
-	Status  string `json:"status"`   // Status: running, finished, failed
-	Total   int    `json:"total"`    // Total results found
-	Results []File `json:"results"`  // Search results (when available)
+	PID     string `json:"pid"`     // Process ID for async operation
+	Status  string `json:"status"`  // Status: running, finished, failed
+	Total   int    `json:"total"`   // Total results found
+	Results []File `json:"results"` // Search results (when available)
 }
 
 // SearchAsync starts an async search operation
@@ -148,7 +148,7 @@ func (fs *FileStationService) SearchAsync(ctx context.Context, path string, opti
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		api.BaseResponse
@@ -195,7 +195,7 @@ func (fs *FileStationService) GetSearchResult(ctx context.Context, pid string) (
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		api.BaseResponse
@@ -242,7 +242,7 @@ func (fs *FileStationService) StopSearch(ctx context.Context, pid string) error 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	var result struct {
 		api.BaseResponse
