@@ -35,13 +35,6 @@ type globalConfig struct {
 	showVersion bool
 }
 
-func envOrDefault(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
-}
-
 func parseGlobalFlags(args []string) (*globalConfig, []string) {
 	fs := flag.NewFlagSet("qnap-cli", flag.ContinueOnError)
 	fs.SetOutput(os.Stdout)
@@ -124,7 +117,9 @@ func printOutput(v interface{}, format string) error {
 	case "text":
 		// Fallback: print JSON compact on one line to keep implementation simple
 		b, err := json.Marshal(v)
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		fmt.Println(string(b))
 		return nil
 	default:
@@ -143,10 +138,12 @@ func cmdLS(cfg *globalConfig, args []string) error {
 
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		items, err := svc.ListFiles(ctx, path, &filestation.ListOptions{Limit: limit, Offset: offset})
-		if err != nil { return err }
-		return printOutput(struct{
-			Path  string               `json:"path"`
-			Items []filestation.File   `json:"items"`
+		if err != nil {
+			return err
+		}
+		return printOutput(struct {
+			Path  string             `json:"path"`
+			Items []filestation.File `json:"items"`
 		}{Path: path, Items: items}, cfg.output)
 	}, cfg)
 }
@@ -156,11 +153,15 @@ func cmdStat(cfg *globalConfig, args []string) error {
 	var path string
 	fs.StringVar(&path, "path", "", "Remote path to stat (required)")
 	_ = fs.Parse(args)
-	if path == "" { return errors.New("-path is required") }
+	if path == "" {
+		return errors.New("-path is required")
+	}
 
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		info, err := svc.GetFileInfo(ctx, path)
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		return printOutput(info, cfg.output)
 	}, cfg)
 }
@@ -170,9 +171,13 @@ func cmdMkdir(cfg *globalConfig, args []string) error {
 	var path string
 	fs.StringVar(&path, "path", "", "Remote directory path to create (required)")
 	_ = fs.Parse(args)
-	if path == "" { return errors.New("-path is required") }
+	if path == "" {
+		return errors.New("-path is required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
-		if err := svc.CreateFolder(ctx, path); err != nil { return err }
+		if err := svc.CreateFolder(ctx, path); err != nil {
+			return err
+		}
 		return printOutput(map[string]any{"ok": true, "path": path}, cfg.output)
 	}, cfg)
 }
@@ -182,12 +187,16 @@ func cmdRM(cfg *globalConfig, args []string) error {
 	var path string
 	fs.StringVar(&path, "path", "", "Remote file/folder path to delete (required)")
 	_ = fs.Parse(args)
-	if path == "" { return errors.New("-path is required") }
+	if path == "" {
+		return errors.New("-path is required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		// Try file delete first, fall back to folder delete
 		if err := svc.DeleteFile(ctx, path); err != nil {
 			// attempt folder delete
-			if err2 := svc.DeleteFolder(ctx, path); err2 != nil { return err }
+			if err2 := svc.DeleteFolder(ctx, path); err2 != nil {
+				return err
+			}
 		}
 		return printOutput(map[string]any{"ok": true, "path": path}, cfg.output)
 	}, cfg)
@@ -199,11 +208,15 @@ func cmdMV(cfg *globalConfig, args []string) error {
 	fs.StringVar(&src, "src", "", "Source path (required)")
 	fs.StringVar(&dst, "dst", "", "Destination folder path or new name (required)")
 	_ = fs.Parse(args)
-	if src == "" || dst == "" { return errors.New("-src and -dst are required") }
+	if src == "" || dst == "" {
+		return errors.New("-src and -dst are required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		// Prefer move API; if fails as file rename, try rename
 		if err := svc.MoveFile(ctx, src, dst, &filestation.CopyMoveOptions{}); err != nil {
-			if err2 := svc.RenameFile(ctx, src, dst); err2 != nil { return err }
+			if err2 := svc.RenameFile(ctx, src, dst); err2 != nil {
+				return err
+			}
 		}
 		return printOutput(map[string]any{"ok": true, "src": src, "dst": dst}, cfg.output)
 	}, cfg)
@@ -217,9 +230,13 @@ func cmdCP(cfg *globalConfig, args []string) error {
 	fs.StringVar(&dst, "dst", "", "Destination folder path (required)")
 	fs.BoolVar(&overwrite, "overwrite", false, "Overwrite existing")
 	_ = fs.Parse(args)
-	if src == "" || dst == "" { return errors.New("-src and -dst are required") }
+	if src == "" || dst == "" {
+		return errors.New("-src and -dst are required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
-		if err := svc.CopyFile(ctx, src, dst, &filestation.CopyMoveOptions{Overwrite: overwrite}); err != nil { return err }
+		if err := svc.CopyFile(ctx, src, dst, &filestation.CopyMoveOptions{Overwrite: overwrite}); err != nil {
+			return err
+		}
 		return printOutput(map[string]any{"ok": true, "src": src, "dst": dst, "overwrite": overwrite}, cfg.output)
 	}, cfg)
 }
@@ -230,10 +247,14 @@ func cmdUpload(cfg *globalConfig, args []string) error {
 	fs.StringVar(&local, "local", "", "Local file path to upload (required)")
 	fs.StringVar(&remote, "remote", "", "Remote destination folder path (required)")
 	_ = fs.Parse(args)
-	if local == "" || remote == "" { return errors.New("-local and -remote are required") }
+	if local == "" || remote == "" {
+		return errors.New("-local and -remote are required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		resp, err := svc.UploadFile(ctx, local, remote, &filestation.UploadOptions{Overwrite: true})
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		return printOutput(resp, cfg.output)
 	}, cfg)
 }
@@ -244,9 +265,13 @@ func cmdDownload(cfg *globalConfig, args []string) error {
 	fs.StringVar(&remote, "remote", "", "Remote file path to download (required)")
 	fs.StringVar(&local, "local", "", "Local destination file path (required)")
 	_ = fs.Parse(args)
-	if local == "" || remote == "" { return errors.New("-local and -remote are required") }
+	if local == "" || remote == "" {
+		return errors.New("-local and -remote are required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
-		if err := svc.DownloadFile(ctx, remote, local, nil); err != nil { return err }
+		if err := svc.DownloadFile(ctx, remote, local, nil); err != nil {
+			return err
+		}
 		return printOutput(map[string]any{"ok": true, "remote": remote, "local": local}, cfg.output)
 	}, cfg)
 }
@@ -257,14 +282,18 @@ func cmdSearch(cfg *globalConfig, args []string) error {
 	fs.StringVar(&path, "path", "/", "Remote root path to search")
 	fs.StringVar(&pattern, "pattern", "", "Search pattern (e.g., *.txt) (required)")
 	_ = fs.Parse(args)
-	if pattern == "" { return errors.New("-pattern is required") }
+	if pattern == "" {
+		return errors.New("-pattern is required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		items, err := svc.SearchByPattern(ctx, path, pattern)
-		if err != nil { return err }
-		return printOutput(struct{
-			Path    string               `json:"path"`
-			Pattern string               `json:"pattern"`
-			Items   []filestation.File   `json:"items"`
+		if err != nil {
+			return err
+		}
+		return printOutput(struct {
+			Path    string             `json:"path"`
+			Pattern string             `json:"pattern"`
+			Items   []filestation.File `json:"items"`
 		}{Path: path, Pattern: pattern, Items: items}, cfg.output)
 	}, cfg)
 }
@@ -274,10 +303,14 @@ func cmdShareCreate(cfg *globalConfig, args []string) error {
 	var path string
 	fs.StringVar(&path, "path", "", "Remote file/folder path to share (required)")
 	_ = fs.Parse(args)
-	if path == "" { return errors.New("-path is required") }
+	if path == "" {
+		return errors.New("-path is required")
+	}
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		link, err := svc.CreateShareLink(ctx, path, &filestation.ShareLinkOptions{Writeable: false})
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		return printOutput(link, cfg.output)
 	}, cfg)
 }
@@ -285,9 +318,35 @@ func cmdShareCreate(cfg *globalConfig, args []string) error {
 func cmdSharesList(cfg *globalConfig, args []string) error {
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
 		links, err := svc.GetShareList(ctx)
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		return printOutput(links, cfg.output)
 	}, cfg)
+}
+
+func runCommand(cfg *globalConfig, cmd string, args []string) error {
+	handlers := map[string]func(*globalConfig, []string) error{
+		"ls":           cmdLS,
+		"stat":         cmdStat,
+		"mkdir":        cmdMkdir,
+		"rm":           cmdRM,
+		"mv":           cmdMV,
+		"cp":           cmdCP,
+		"upload":       cmdUpload,
+		"download":     cmdDownload,
+		"search":       cmdSearch,
+		"share-create": cmdShareCreate,
+		"shares-list":  cmdSharesList,
+	}
+	if cmd == "help" || cmd == "-h" || cmd == "--help" {
+		usage()
+		return nil
+	}
+	if h, ok := handlers[cmd]; ok {
+		return h(cfg, args)
+	}
+	return fmt.Errorf("unknown command: %s", cmd)
 }
 
 func usage() {
@@ -341,40 +400,7 @@ func main() {
 	cmd := rest[0]
 	args := rest[1:]
 
-	var err error
-	switch cmd {
-	case "ls":
-		err = cmdLS(cfg, args)
-	case "stat":
-		err = cmdStat(cfg, args)
-	case "mkdir":
-		err = cmdMkdir(cfg, args)
-	case "rm":
-		err = cmdRM(cfg, args)
-	case "mv":
-		err = cmdMV(cfg, args)
-	case "cp":
-		err = cmdCP(cfg, args)
-	case "upload":
-		err = cmdUpload(cfg, args)
-	case "download":
-		err = cmdDownload(cfg, args)
-	case "search":
-		err = cmdSearch(cfg, args)
-	case "share-create":
-		err = cmdShareCreate(cfg, args)
-	case "shares-list":
-		err = cmdSharesList(cfg, args)
-	case "help", "-h", "--help":
-		usage()
-		return
-	default:
-		fmt.Fprintf(os.Stderr, "unknown command: %s\n\n", cmd)
-		usage()
-		os.Exit(2)
-	}
-
-	if err != nil {
+	if err := runCommand(cfg, cmd, args); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 }
