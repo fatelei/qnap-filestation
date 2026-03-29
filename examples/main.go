@@ -47,11 +47,11 @@ func main() {
 
 	// Print files
 	for _, file := range files {
-		fmt.Printf("%s (%d bytes)\n", file.Name, file.Size)
+		fmt.Printf("%s (%d bytes)\n", file.Name(), file.Size())
 	}
 
 	// Upload a file
-	err = fs.UploadFile(ctx, "/local/path/file.txt", "/home/remote", nil)
+	_, err = fs.UploadFile(ctx, "/local/path/file.txt", "/home/remote", nil)
 	if err != nil {
 		log.Printf("Upload failed: %v", err)
 	}
@@ -75,7 +75,7 @@ func main() {
 	}
 
 	for _, result := range results {
-		fmt.Printf("Found: %s\n", result.Name)
+		fmt.Printf("Found: %s\n", result.Name())
 	}
 
 	// Create a share link
