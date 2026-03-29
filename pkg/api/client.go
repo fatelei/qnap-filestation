@@ -3,11 +3,13 @@ package api
 import (
 	"context"
 	"crypto/tls"
-	"encoding/json"
+	"encoding/base64"
+	"encoding/xml"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 )
@@ -48,6 +50,14 @@ type Client struct {
 func NewClient(cfg *Config) (*Client, error) {
 	if cfg == nil {
 		cfg = DefaultConfig()
+	}
+
+	// Fill in sane defaults when fields are omitted by callers (e.g., tests)
+	if cfg.Timeout == 0 {
+		cfg.Timeout = 30 * time.Second
+	}
+	if cfg.Logger == nil {
+		cfg.Logger = slog.Default()
 	}
 
 	if cfg.Host == "" {
@@ -116,44 +126,57 @@ func (c *Client) setSID(sid string) {
 
 // Login authenticates with the QNAP device
 func (c *Client) Login(ctx context.Context) error {
-	endpoint := "/auth.cgi"
-	params := map[string]string{
-		"api":     "SYNO.API.Auth",
-		"method":  "login",
-		"version": "2",
-		"account": c.config.Username,
-		"passwd":  c.config.Password,
-		"session": "FileStation",
-		"format":  "sid",
+	endpoint := "/cgi-bin/authLogin.cgi"
+
+	// QNAP uses base64 encoded password
+	pwdEncoded := base64.StdEncoding.EncodeToString([]byte(c.config.Password))
+
+	// Build form data for POST request
+	formData := url.Values{}
+	formData.Set("user", c.config.Username)
+	formData.Set("pwd", pwdEncoded)
+	formData.Set("dont_verify_2sv", "1")
+
+	// Create request URL
+	reqURL := c.baseURL.ResolveReference(&url.URL{Path: endpoint})
+
+	req, err := http.NewRequestWithContext(ctx, "POST", reqURL.String(), strings.NewReader(formData.Encode()))
+	if err != nil {
+		return WrapAPIError(ErrUnknown, "failed to create request", err)
 	}
 
-	resp, err := c.doRequest(ctx, "GET", endpoint, params, nil)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	c.logger.Debug("API request", "method", "POST", "endpoint", endpoint, "url", reqURL.String())
+
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return err
+		return WrapAPIError(ErrNetwork, "network error", err)
 	}
 	defer resp.Body.Close()
 
+	// Parse XML response
 	var result struct {
-		Success int `json:"success"`
-		Data    struct {
-			SID string `json:"sid"`
-		} `json:"data"`
+		XMLName  xml.Name `xml:"QDocRoot"`
+		AuthSid  string   `xml:"authSid"`
+		AuthPassed string `xml:"authPassed"`
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	if err := xml.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return WrapAPIError(ErrUnknown, "failed to parse login response", err)
 	}
 
-	if result.Success != 1 {
-		return NewAPIError(ErrAuthFailed, "login failed")
+	// Check if authentication passed
+	if result.AuthPassed != "1" {
+		return NewAPIError(ErrAuthFailed, "login failed: invalid credentials")
 	}
 
-	if result.Data.SID == "" {
+	if result.AuthSid == "" {
 		return NewAPIError(ErrAuthFailed, "no SID returned")
 	}
 
-	c.setSID(result.Data.SID)
-	c.logger.Info("Successfully authenticated", "sid", result.Data.SID)
+	c.setSID(result.AuthSid)
+	c.logger.Info("Successfully authenticated", "sid", result.AuthSid)
 
 	return nil
 }

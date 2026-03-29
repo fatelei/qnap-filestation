@@ -49,7 +49,7 @@ func (ms *MockServer) handler(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 
 	// Handle authentication
-	if strings.Contains(path, "/auth.cgi") {
+	if strings.Contains(path, "/auth.cgi") || strings.Contains(path, "/authLogin.cgi") {
 		ms.authCalledMu.Lock()
 		ms.authCalled = true
 		ms.authCalledMu.Unlock()
@@ -57,6 +57,19 @@ func (ms *MockServer) handler(w http.ResponseWriter, r *http.Request) {
 		sid := "test-sid-12345"
 		ms.sid = sid
 
+		// Return XML response for QNAP authLogin.cgi
+		if strings.Contains(path, "/authLogin.cgi") {
+			w.Header().Set("Content-Type", "application/xml")
+			xmlResponse := `<?xml version="1.0" encoding="UTF-8"?>
+<QDocRoot>
+	<authPassed>1</authPassed>
+	<authSid>` + sid + `</authSid>
+</QDocRoot>`
+			w.Write([]byte(xmlResponse))
+			return
+		}
+
+		// Return JSON response for standard auth.cgi
 		response := map[string]interface{}{
 			"success": 1,
 			"data": map[string]string{

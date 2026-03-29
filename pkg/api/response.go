@@ -2,15 +2,61 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
+
+// IntBool is a helper type that unmarshals JSON values that may be
+// encoded as int/bool/string into an integer 0/1 representation.
+type IntBool int
+
+// UnmarshalJSON implements json.Unmarshaler to accept 1/0, true/false, or
+// "true"/"false"/"1"/"0" for compatibility with inconsistent APIs.
+func (b *IntBool) UnmarshalJSON(data []byte) error {
+	// Try boolean
+	var vb bool
+	if err := json.Unmarshal(data, &vb); err == nil {
+		if vb {
+			*b = 1
+		} else {
+			*b = 0
+		}
+		return nil
+	}
+	// Try integer
+	var vi int
+	if err := json.Unmarshal(data, &vi); err == nil {
+		if vi != 0 {
+			*b = 1
+		} else {
+			*b = 0
+		}
+		return nil
+	}
+	// Try string forms
+	var vs string
+	if err := json.Unmarshal(data, &vs); err == nil {
+		s := strings.ToLower(strings.TrimSpace(vs))
+		switch s {
+		case "true", "1", "yes", "y":
+			*b = 1
+			return nil
+		case "false", "0", "no", "n":
+			*b = 0
+			return nil
+		}
+		return fmt.Errorf("invalid IntBool string %q", vs)
+	}
+	return fmt.Errorf("invalid IntBool: %s", string(data))
+}
 
 // BaseResponse is the standard response structure from QNAP API
 type BaseResponse struct {
-	Success int    `json:"success"`
-	Code    int    `json:"error_code,omitempty"`
-	Message string `json:"error_msg,omitempty"`
+	Success IntBool `json:"success"`
+	Code    int     `json:"error_code,omitempty"`
+	Message string  `json:"error_msg,omitempty"`
 }
 
 // IsSuccess returns true if the response indicates success

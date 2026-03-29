@@ -2,13 +2,13 @@ package filestation
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
-	
 
 	"github.com/fatelei/qnap-filestation/pkg/api"
 )
@@ -20,20 +20,33 @@ type DownloadOptions struct {
 	Progress chan<- DownloadProgress
 }
 
+// DownloadResponse represents the response from download operations
+type DownloadResponse struct {
+	api.BaseResponse
+	Data struct {
+		DownloadID string `json:"download_id"`
+		URL        string `json:"url"`
+	} `json:"data"`
+}
+
 // DownloadFile downloads a file from the QNAP device to local storage
+// Endpoint: /cgi-bin/filemanager/utilRequest.cgi
+// Params: func=download, sid, isfolder=0, compress=0, source_path, source_file, source_total
 func (fs *FileStationService) DownloadFile(ctx context.Context, remotePath, localPath string, options *DownloadOptions) error {
 	sid := fs.client.GetSID()
 	if sid == "" {
 		return api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/download.cgi"
+	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"api":     "SYNO.FileStation.Download",
-		"method":  "download",
-		"version": "2",
-		"path":    remotePath,
-		"mode":    "open",
+		"func":         "download",
+		"sid":          sid,
+		"isfolder":     "0",
+		"compress":     "0",
+		"source_path":  filepath.Dir(remotePath),
+		"source_file":  filepath.Base(remotePath),
+		"source_total": "1",
 	}
 
 	baseURL := fs.client.GetBaseURL()
@@ -41,9 +54,6 @@ func (fs *FileStationService) DownloadFile(ctx context.Context, remotePath, loca
 	q := u.Query()
 	for k, v := range params {
 		q.Set(k, v)
-	}
-	if sid != "" {
-		q.Set("sid", sid)
 	}
 	u.RawQuery = q.Encode()
 
@@ -82,19 +92,23 @@ func (fs *FileStationService) DownloadFile(ctx context.Context, remotePath, loca
 }
 
 // DownloadReader returns an io.ReadCloser for downloading a file
+// Endpoint: /cgi-bin/filemanager/utilRequest.cgi
+// Params: func=download, sid, isfolder=0, compress=0, source_path, source_file, source_total
 func (fs *FileStationService) DownloadReader(ctx context.Context, remotePath string) (io.ReadCloser, int64, error) {
 	sid := fs.client.GetSID()
 	if sid == "" {
 		return nil, 0, api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/download.cgi"
+	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"api":     "SYNO.FileStation.Download",
-		"method":  "download",
-		"version": "2",
-		"path":    remotePath,
-		"mode":    "open",
+		"func":         "download",
+		"sid":          sid,
+		"isfolder":     "0",
+		"compress":     "0",
+		"source_path":  filepath.Dir(remotePath),
+		"source_file":  filepath.Base(remotePath),
+		"source_total": "1",
 	}
 
 	baseURL := fs.client.GetBaseURL()
@@ -102,9 +116,6 @@ func (fs *FileStationService) DownloadReader(ctx context.Context, remotePath str
 	q := u.Query()
 	for k, v := range params {
 		q.Set(k, v)
-	}
-	if sid != "" {
-		q.Set("sid", sid)
 	}
 	u.RawQuery = q.Encode()
 
@@ -126,3 +137,46 @@ func (fs *FileStationService) DownloadReader(ctx context.Context, remotePath str
 	size := resp.ContentLength
 	return resp.Body, size, nil
 }
+
+// DownloadFileAsync starts an asynchronous download and returns the download ID
+// Endpoint: /cgi-bin/filemanager/utilRequest.cgi
+// Params: func=download, sid, isfolder=0, compress=0, source_path, source_file, source_total
+// Returns: download_id
+func (fs *FileStationService) DownloadFileAsync(ctx context.Context, remotePath string) (*DownloadResponse, error) {
+	sid := fs.client.GetSID()
+	if sid == "" {
+		return nil, api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
+	}
+
+	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
+	params := map[string]string{
+		"func":         "download",
+		"sid":          sid,
+		"isfolder":     "0",
+		"compress":     "0",
+		"source_path":  filepath.Dir(remotePath),
+		"source_file":  filepath.Base(remotePath),
+		"source_total": "1",
+	}
+
+	resp, err := fs.client.DoRequest(ctx, "GET", endpoint, params, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result DownloadResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, api.WrapAPIError(api.ErrUnknown, "failed to parse download response", err)
+	}
+
+	if !result.IsSuccess() {
+		return nil, &api.APIError{
+			Code:    result.GetErrorCode(),
+			Message: result.Message,
+		}
+	}
+
+	return &result, nil
+}
+

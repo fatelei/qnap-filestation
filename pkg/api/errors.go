@@ -12,6 +12,7 @@ const (
 	ErrAuthFailed     ErrorCode = 1000
 	ErrInvalidSID     ErrorCode = 1001
 	ErrSessionExpired ErrorCode = 1002
+	ErrInvalidParams  ErrorCode = 1003
 
 	// File operation errors
 	ErrNotFound       ErrorCode = 2001
