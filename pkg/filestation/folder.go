@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/fatelei/qnap-filestation/pkg/api"
@@ -123,12 +124,16 @@ func (fs *FileStationService) DeleteFolder(ctx context.Context, path string) err
 		return api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/file.cgi"
+	// Split path into parent directory and folder name for QNAP API
+	dir, name := filepath.Dir(path), filepath.Base(path)
+
+	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"api":     "SYNO.FileStation.Delete",
-		"method":  "delete",
-		"version": "2",
-		"path":    path,
+		"func":       "delete",
+		"sid":        sid,
+		"path":       dir,
+		"file_total": "1",
+		"file_name":  name,
 	}
 
 	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
@@ -137,54 +142,29 @@ func (fs *FileStationService) DeleteFolder(ctx context.Context, path string) err
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	var result api.BaseResponse
+	var result UtilRequestResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return api.WrapAPIError(api.ErrUnknown, "failed to parse response", err)
 	}
 
-	if !result.IsSuccess() {
-		return &api.APIError{
-			Code:    result.GetErrorCode(),
-			Message: result.Message,
-		}
+	if result.Status != 1 || result.Success != "true" {
+		return api.NewAPIError(api.ErrUnknown, "delete operation failed")
 	}
 
 	return nil
 }
 
-// RenameFolder renames a folder
+// RenameFolder renames a folder using the QNAP utilRequest.cgi API
 func (fs *FileStationService) RenameFolder(ctx context.Context, oldPath, newPath string) error {
 	sid := fs.client.GetSID()
 	if sid == "" {
 		return api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/file.cgi"
-	params := map[string]string{
-		"api":     "SYNO.FileStation.Rename",
-		"method":  "rename",
-		"version": "2",
-		"path":    oldPath,
-		"name":    newPath,
-	}
+	// Split path into parent directory and folder name
+	dir := filepath.Dir(oldPath)
+	sourceName := filepath.Base(oldPath)
+	destName := filepath.Base(newPath)
 
-	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
-	if err != nil {
-		return err
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	var result api.BaseResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return api.WrapAPIError(api.ErrUnknown, "failed to parse response", err)
-	}
-
-	if !result.IsSuccess() {
-		return &api.APIError{
-			Code:    result.GetErrorCode(),
-			Message: result.Message,
-		}
-	}
-
-	return nil
+	return fs.RenameFileUtil(ctx, dir, sourceName, destName)
 }

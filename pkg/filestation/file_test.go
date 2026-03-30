@@ -321,11 +321,15 @@ func TestDeleteFiles(t *testing.T) {
 			wantErr:     false,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
-				if path := r.URL.Query().Get("source_path"); path != "/home" {
-					t.Errorf("Expected source_path=/home, got %s", path)
+				if path := r.URL.Query().Get("path"); path != "/home" {
+					t.Errorf("Expected path=/home, got %s", path)
 				}
-				if file := r.URL.Query().Get("source_file[0]"); file != "file1.txt" {
-					t.Errorf("Expected source_file[0]=file1.txt, got %s", file)
+				if total := r.URL.Query().Get("file_total"); total != "1" {
+					t.Errorf("Expected file_total=1, got %s", total)
+				}
+				files := r.URL.Query()["file_name"]
+				if len(files) != 1 || files[0] != "file1.txt" {
+					t.Errorf("Expected file_name=[file1.txt], got %v", files)
 				}
 			},
 		},
@@ -343,14 +347,18 @@ func TestDeleteFiles(t *testing.T) {
 			wantErr:     false,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
-				if r.URL.Query().Get("source_file[0]") != "file1.txt" {
-					t.Error("Expected source_file[0]=file1.txt")
+				if total := r.URL.Query().Get("file_total"); total != "3" {
+					t.Errorf("Expected file_total=3, got %s", total)
 				}
-				if r.URL.Query().Get("source_file[1]") != "file2.txt" {
-					t.Error("Expected source_file[1]=file2.txt")
+				files := r.URL.Query()["file_name"]
+				if len(files) != 3 {
+					t.Errorf("Expected 3 file_name params, got %d", len(files))
 				}
-				if r.URL.Query().Get("source_file[2]") != "file3.txt" {
-					t.Error("Expected source_file[2]=file3.txt")
+				expected := []string{"file1.txt", "file2.txt", "file3.txt"}
+				for i, f := range expected {
+					if i < len(files) && files[i] != f {
+						t.Errorf("Expected file_name[%d]=%s, got %s", i, f, files[i])
+					}
 				}
 			},
 		},
@@ -708,8 +716,12 @@ func TestCopyFilesUtil(t *testing.T) {
 				if dst := r.URL.Query().Get("dest_path"); dst != "/backup" {
 					t.Errorf("Expected dest_path=/backup, got %s", dst)
 				}
-				if file := r.URL.Query().Get("source_file[0]"); file != "file1.txt" {
-					t.Errorf("Expected source_file[0]=file1.txt, got %s", file)
+				if total := r.URL.Query().Get("source_total"); total != "1" {
+					t.Errorf("Expected source_total=1, got %s", total)
+				}
+				files := r.URL.Query()["source_file"]
+				if len(files) != 1 || files[0] != "file1.txt" {
+					t.Errorf("Expected source_file=[file1.txt], got %v", files)
 				}
 			},
 		},
@@ -728,14 +740,18 @@ func TestCopyFilesUtil(t *testing.T) {
 			wantErr:     false,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
-				if r.URL.Query().Get("source_file[0]") != "file1.txt" {
-					t.Error("Expected source_file[0]=file1.txt")
+				if total := r.URL.Query().Get("source_total"); total != "3" {
+					t.Errorf("Expected source_total=3, got %s", total)
 				}
-				if r.URL.Query().Get("source_file[1]") != "file2.txt" {
-					t.Error("Expected source_file[1]=file2.txt")
+				files := r.URL.Query()["source_file"]
+				if len(files) != 3 {
+					t.Errorf("Expected 3 source_file params, got %d", len(files))
 				}
-				if r.URL.Query().Get("source_file[2]") != "file3.txt" {
-					t.Error("Expected source_file[2]=file3.txt")
+				expected := []string{"file1.txt", "file2.txt", "file3.txt"}
+				for i, f := range expected {
+					if i < len(files) && files[i] != f {
+						t.Errorf("Expected source_file[%d]=%s, got %s", i, f, files[i])
+					}
 				}
 			},
 		},
@@ -851,12 +867,12 @@ func TestCopyFilesUtil(t *testing.T) {
 			wantErr:     false,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
-				// Verify all files are included
-				for i := 0; i < 5; i++ {
-					expected := "source_file[" + string(rune('0'+i)) + "]"
-					if r.URL.Query().Get(expected) == "" {
-						t.Errorf("Expected %s to be set", expected)
-					}
+				if total := r.URL.Query().Get("source_total"); total != "5" {
+					t.Errorf("Expected source_total=5, got %s", total)
+				}
+				files := r.URL.Query()["source_file"]
+				if len(files) != 5 {
+					t.Errorf("Expected 5 source_file params, got %d", len(files))
 				}
 			},
 		},
@@ -944,8 +960,12 @@ func TestMoveFilesUtil(t *testing.T) {
 				if dst := r.URL.Query().Get("dest_path"); dst != "/archive" {
 					t.Errorf("Expected dest_path=/archive, got %s", dst)
 				}
-				if file := r.URL.Query().Get("source_file[0]"); file != "file1.txt" {
-					t.Errorf("Expected source_file[0]=file1.txt, got %s", file)
+				if total := r.URL.Query().Get("source_total"); total != "1" {
+					t.Errorf("Expected source_total=1, got %s", total)
+				}
+				files := r.URL.Query()["source_file"]
+				if len(files) != 1 || files[0] != "file1.txt" {
+					t.Errorf("Expected source_file=[file1.txt], got %v", files)
 				}
 				if fn := r.URL.Query().Get("func"); fn != "move" {
 					t.Errorf("Expected func=move, got %s", fn)
@@ -967,14 +987,18 @@ func TestMoveFilesUtil(t *testing.T) {
 			wantErr:     false,
 			assertRequest: func(t *testing.T, r *http.Request) {
 				t.Helper()
-				if r.URL.Query().Get("source_file[0]") != "file1.txt" {
-					t.Error("Expected source_file[0]=file1.txt")
+				if total := r.URL.Query().Get("source_total"); total != "3" {
+					t.Errorf("Expected source_total=3, got %s", total)
 				}
-				if r.URL.Query().Get("source_file[1]") != "file2.txt" {
-					t.Error("Expected source_file[1]=file2.txt")
+				files := r.URL.Query()["source_file"]
+				if len(files) != 3 {
+					t.Errorf("Expected 3 source_file params, got %d", len(files))
 				}
-				if r.URL.Query().Get("source_file[2]") != "file3.txt" {
-					t.Error("Expected source_file[2]=file3.txt")
+				expected := []string{"file1.txt", "file2.txt", "file3.txt"}
+				for i, f := range expected {
+					if i < len(files) && files[i] != f {
+						t.Errorf("Expected source_file[%d]=%s, got %s", i, f, files[i])
+					}
 				}
 			},
 		},

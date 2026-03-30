@@ -68,6 +68,7 @@ type ListOptions struct {
 // CopyMoveOptions contains options for copy/move operations
 type CopyMoveOptions struct {
 	Overwrite bool `json:"overwrite,omitempty"`
+	Mode      int  `json:"mode,omitempty"` // 0=overwrite, 1=skip, 2=auto rename
 }
 
 // ShareLink represents a share link

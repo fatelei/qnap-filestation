@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
+	"path/filepath"
+	"strconv"
 
 	"github.com/fatelei/qnap-filestation/pkg/api"
 )
@@ -125,12 +129,16 @@ func (fs *FileStationService) DeleteFile(ctx context.Context, path string) error
 		return api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/file.cgi"
+	// Split path into parent directory and file name for QNAP API
+	dir, name := filepath.Dir(path), filepath.Base(path)
+
+	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"api":     "SYNO.FileStation.Delete",
-		"method":  "delete",
-		"version": "2",
-		"path":    path,
+		"func":       "delete",
+		"sid":        sid,
+		"path":       dir,
+		"file_total": "1",
+		"file_name":  name,
 	}
 
 	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
@@ -143,150 +151,59 @@ func (fs *FileStationService) DeleteFile(ctx context.Context, path string) error
 		}
 	}()
 
-	var result api.BaseResponse
+	var result UtilRequestResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return api.WrapAPIError(api.ErrUnknown, "failed to parse response", err)
 	}
 
-	if !result.IsSuccess() {
-		return &api.APIError{
-			Code:    result.GetErrorCode(),
-			Message: result.Message,
-		}
+	if result.Status != 1 || result.Success != "true" {
+		return api.NewAPIError(api.ErrUnknown, "delete operation failed")
 	}
 
 	return nil
 }
 
-// RenameFile renames a file
+// RenameFile renames a file using the QNAP utilRequest.cgi API
 func (fs *FileStationService) RenameFile(ctx context.Context, oldPath, newPath string) error {
 	sid := fs.client.GetSID()
 	if sid == "" {
 		return api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/file.cgi"
-	params := map[string]string{
-		"api":     "SYNO.FileStation.Rename",
-		"method":  "rename",
-		"version": "2",
-		"path":    oldPath,
-		"name":    newPath,
-	}
+	// Split path into parent directory and file name
+	dir := filepath.Dir(oldPath)
+	sourceName := filepath.Base(oldPath)
+	destName := filepath.Base(newPath)
 
-	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if cerr := resp.Body.Close(); cerr != nil {
-			_ = cerr
-		}
-	}()
-
-	var result api.BaseResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return api.WrapAPIError(api.ErrUnknown, "failed to parse response", err)
-	}
-
-	if !result.IsSuccess() {
-		return &api.APIError{
-			Code:    result.GetErrorCode(),
-			Message: result.Message,
-		}
-	}
-
-	return nil
+	return fs.RenameFileUtil(ctx, dir, sourceName, destName)
 }
 
-// CopyFile copies a file to a destination
+// CopyFile copies a file to a destination using the QNAP utilRequest.cgi API
 func (fs *FileStationService) CopyFile(ctx context.Context, source, dest string, options *CopyMoveOptions) error {
 	sid := fs.client.GetSID()
 	if sid == "" {
 		return api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/file.cgi"
-	params := map[string]string{
-		"api":              "SYNO.FileStation.CopyMove",
-		"method":           "copy",
-		"version":          "2",
-		"path":             source,
-		"dest_folder_path": dest,
-	}
+	// Split source into parent directory and file name
+	sourcePath := filepath.Dir(source)
+	sourceFile := filepath.Base(source)
 
-	if options != nil && options.Overwrite {
-		params["overwrite"] = "true"
-	}
-
-	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if cerr := resp.Body.Close(); cerr != nil {
-			_ = cerr
-		}
-	}()
-
-	var result api.BaseResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return api.WrapAPIError(api.ErrUnknown, "failed to parse response", err)
-	}
-
-	if !result.IsSuccess() {
-		return &api.APIError{
-			Code:    result.GetErrorCode(),
-			Message: result.Message,
-		}
-	}
-
-	return nil
+	return fs.CopyFilesUtil(ctx, sourcePath, dest, []string{sourceFile})
 }
 
-// MoveFile moves a file to a destination
+// MoveFile moves a file to a destination using the QNAP utilRequest.cgi API
 func (fs *FileStationService) MoveFile(ctx context.Context, source, dest string, options *CopyMoveOptions) error {
 	sid := fs.client.GetSID()
 	if sid == "" {
 		return api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/file.cgi"
-	params := map[string]string{
-		"api":              "SYNO.FileStation.CopyMove",
-		"method":           "move",
-		"version":          "2",
-		"path":             source,
-		"dest_folder_path": dest,
-	}
+	// Split source into parent directory and file name
+	sourcePath := filepath.Dir(source)
+	sourceFile := filepath.Base(source)
 
-	if options != nil && options.Overwrite {
-		params["overwrite"] = "true"
-	}
-
-	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if cerr := resp.Body.Close(); cerr != nil {
-			_ = cerr
-		}
-	}()
-
-	var result api.BaseResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return api.WrapAPIError(api.ErrUnknown, "failed to parse response", err)
-	}
-
-	if !result.IsSuccess() {
-		return &api.APIError{
-			Code:    result.GetErrorCode(),
-			Message: result.Message,
-		}
-	}
-
-	return nil
+	return fs.MoveFilesUtil(ctx, sourcePath, dest, []string{sourceFile})
 }
 
 // UtilRequestResponse represents the response from utilRequest.cgi operations
@@ -308,22 +225,27 @@ func (fs *FileStationService) DeleteFiles(ctx context.Context, sourcePath string
 
 	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 
-	// Build parameters - source_file can be repeated for multiple files
-	params := map[string]string{
-		"func":        "delete",
-		"sid":         sid,
-		"source_path": sourcePath,
+	// Build URL manually to support repeated file_name parameters
+	baseURL := fs.client.GetBaseURL()
+	u := baseURL.ResolveReference(&url.URL{Path: endpoint})
+	q := u.Query()
+	q.Set("func", "delete")
+	q.Set("sid", sid)
+	q.Set("path", sourcePath)
+	q.Set("file_total", strconv.Itoa(len(sourceFiles)))
+	for _, file := range sourceFiles {
+		q.Add("file_name", file)
 	}
+	u.RawQuery = q.Encode()
 
-	// Add each source file (will be sent as repeated parameters)
-	for i, file := range sourceFiles {
-		key := fmt.Sprintf("source_file[%d]", i)
-		params[key] = file
-	}
-
-	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
+	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), nil)
 	if err != nil {
 		return err
+	}
+
+	resp, err := fs.client.GetHTTPClient().Do(req)
+	if err != nil {
+		return api.WrapAPIError(api.ErrNetwork, "delete request failed", err)
 	}
 	defer func() {
 		if cerr := resp.Body.Close(); cerr != nil {
@@ -398,23 +320,28 @@ func (fs *FileStationService) CopyFilesUtil(ctx context.Context, sourcePath, des
 
 	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 
-	// Build parameters - source_file can be repeated for multiple files
-	params := map[string]string{
-		"func":        "copy",
-		"sid":         sid,
-		"source_path": sourcePath,
-		"dest_path":   destPath,
+	// Build URL manually to support repeated source_file parameters
+	baseURL := fs.client.GetBaseURL()
+	u := baseURL.ResolveReference(&url.URL{Path: endpoint})
+	q := u.Query()
+	q.Set("func", "copy")
+	q.Set("sid", sid)
+	q.Set("source_path", sourcePath)
+	q.Set("source_total", strconv.Itoa(len(sourceFiles)))
+	q.Set("dest_path", destPath)
+	for _, file := range sourceFiles {
+		q.Add("source_file", file)
 	}
+	u.RawQuery = q.Encode()
 
-	// Add each source file (will be sent as repeated parameters)
-	for i, file := range sourceFiles {
-		key := fmt.Sprintf("source_file[%d]", i)
-		params[key] = file
-	}
-
-	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
+	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), nil)
 	if err != nil {
 		return err
+	}
+
+	resp, err := fs.client.GetHTTPClient().Do(req)
+	if err != nil {
+		return api.WrapAPIError(api.ErrNetwork, "copy request failed", err)
 	}
 	defer func() {
 		if cerr := resp.Body.Close(); cerr != nil {
@@ -447,23 +374,28 @@ func (fs *FileStationService) MoveFilesUtil(ctx context.Context, sourcePath, des
 
 	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 
-	// Build parameters - source_file can be repeated for multiple files
-	params := map[string]string{
-		"func":        "move",
-		"sid":         sid,
-		"source_path": sourcePath,
-		"dest_path":   destPath,
+	// Build URL manually to support repeated source_file parameters
+	baseURL := fs.client.GetBaseURL()
+	u := baseURL.ResolveReference(&url.URL{Path: endpoint})
+	q := u.Query()
+	q.Set("func", "move")
+	q.Set("sid", sid)
+	q.Set("source_path", sourcePath)
+	q.Set("source_total", strconv.Itoa(len(sourceFiles)))
+	q.Set("dest_path", destPath)
+	for _, file := range sourceFiles {
+		q.Add("source_file", file)
 	}
+	u.RawQuery = q.Encode()
 
-	// Add each source file (will be sent as repeated parameters)
-	for i, file := range sourceFiles {
-		key := fmt.Sprintf("source_file[%d]", i)
-		params[key] = file
-	}
-
-	resp, err := fs.client.DoRequest(ctx, "POST", endpoint, params, nil)
+	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), nil)
 	if err != nil {
 		return err
+	}
+
+	resp, err := fs.client.GetHTTPClient().Do(req)
+	if err != nil {
+		return api.WrapAPIError(api.ErrNetwork, "move request failed", err)
 	}
 	defer func() {
 		if cerr := resp.Body.Close(); cerr != nil {
