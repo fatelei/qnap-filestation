@@ -317,11 +317,14 @@ func cmdShareCreate(cfg *globalConfig, args []string) error {
 
 func cmdSharesList(cfg *globalConfig, args []string) error {
 	return withClient(func(ctx context.Context, svc *filestation.FileStationService) error {
-		links, err := svc.GetShareList(ctx)
+		links, total, err := svc.ListShareLinks(ctx, nil)
 		if err != nil {
 			return err
 		}
-		return printOutput(links, cfg.output)
+		return printOutput(struct {
+			Total int                         `json:"total"`
+			Items []filestation.ShareLink     `json:"items"`
+		}{Total: total, Items: links}, cfg.output)
 	}, cfg)
 }
 

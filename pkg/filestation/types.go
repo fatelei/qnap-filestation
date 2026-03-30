@@ -71,18 +71,49 @@ type CopyMoveOptions struct {
 	Mode      int  `json:"mode,omitempty"` // 0=overwrite, 1=skip, 2=auto rename
 }
 
-// ShareLink represents a share link
+// ShareLink represents a share link. This struct includes fields used by
+// multiple endpoints. For get_share_list (utilRequest.cgi), QNAP returns a
+// document-style payload with fields like ssid, download_link, link_name, etc.
+// Those are included here with `omitempty` to keep compatibility with other
+// endpoints that return different shapes.
 type ShareLink struct {
-	ID            string    `json:"id"`
-	URL           string    `json:"url"`
-	Name          string    `json:"name"`
-	Path          string    `json:"path"`
+	// Generic/common fields (used by some endpoints like get_share_link_info)
+	ID            string    `json:"id,omitempty"`
+	URL           string    `json:"url,omitempty"`
+	Name          string    `json:"name,omitempty"`
+	Path          string    `json:"path,omitempty"`
 	Expires       time.Time `json:"expires,omitempty"`
-	Password      bool      `json:"password_protected"`
-	Writeable     bool      `json:"writeable"`
+	Password      bool      `json:"password_protected,omitempty"`
+	Writeable     bool      `json:"writeable,omitempty"`
 	DownloadCount int       `json:"download_count,omitempty"`
-	Created       time.Time `json:"created"`
+	Created       time.Time `json:"created,omitempty"`
 	Validity      int       `json:"validity,omitempty"`
+
+	// QNAP utilRequest.cgi get_share_list fields
+	SSID          string `json:"ssid,omitempty"`
+	IsFolder      int    `json:"isfolder,omitempty"`
+	FileSize      string `json:"filesize,omitempty"`
+	FileType      int    `json:"filetype,omitempty"`
+	Multiple      int    `json:"multiple,omitempty"`
+	DownloadLink  string `json:"download_link,omitempty"`
+	StartTime     int64  `json:"start_time,omitempty"`
+	ExpireTime    int64  `json:"expire_time,omitempty"`
+	Addressee     string `json:"addressee,omitempty"`
+	Creator       string `json:"creator,omitempty"`
+	Qsync         int    `json:"qsync,omitempty"`
+	AccessCode    string `json:"access_code,omitempty"`
+	DownloadLimit int    `json:"download_limit,omitempty"`
+	XOption       int    `json:"x_option,omitempty"`
+	Option        int    `json:"option,omitempty"`
+	Misc          string `json:"misc,omitempty"`
+	Title         string `json:"title,omitempty"`
+	Description   string `json:"description,omitempty"`
+	Type          int    `json:"type,omitempty"`
+	LinkName      string `json:"link_name,omitempty"`
+	Ht            int    `json:"ht,omitempty"`
+	AllAvailable  int    `json:"all_available,omitempty"`
+	Filename      string `json:"filename,omitempty"`
+	SharedItems   int    `json:"shared_items,omitempty"`
 }
 
 // ShareLinkOptions contains options for creating share links

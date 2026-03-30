@@ -18,39 +18,66 @@ type ShareListResponse struct {
 	} `json:"data"`
 }
 
-// ListShareLinks lists all share links
-func (fs *FileStationService) ListShareLinks(ctx context.Context) ([]ShareLink, error) {
+// ShareListOptions allows filtering/sorting/pagination for get_share_list
+// Valid values based on QNAP docs:
+// - Dir: "ASC" or "DESC" (default is implementation-defined by NAS)
+// - Sort: filename | link_name | filesize | download_link | start_time | expire_time
+// - Start: start index (0-based according to most utilRequest endpoints)
+// - Limit: page size
+type ShareListOptions struct {
+	Dir        string
+	Start      int
+	Limit      int
+	Sort       string
+	// If NAS requires password to list shares, provide AccessCode; it will be sent
+	// as 'access_code' per utilRequest.cgi get_share_list documentation.
+	AccessCode string
+}
+
+// ListShareLinks lists share links and returns items along with total count
+func (fs *FileStationService) ListShareLinks(ctx context.Context, opts *ShareListOptions) ([]ShareLink, int, error) {
 	sid := fs.client.GetSID()
 	if sid == "" {
-		return nil, api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
+		return nil, 0, api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
 	}
 
-	endpoint := "/filestation/share.cgi"
+	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
 	params := map[string]string{
-		"api":     "SYNO.FileStation.Sharing",
-		"method":  "list",
-		"version": "2",
+		"func": "get_share_list",
+		"sid":  sid,
+	}
+
+	if opts != nil {
+		if opts.Dir != "" {
+			params["dir"] = opts.Dir
+		}
+		if opts.Start > 0 {
+			params["start"] = fmt.Sprintf("%d", opts.Start)
+		}
+		if opts.Limit > 0 {
+			params["limit"] = fmt.Sprintf("%d", opts.Limit)
+		}
+		if opts.Sort != "" {
+			params["sort"] = opts.Sort
+		}
+		if opts.AccessCode != "" {
+			params["access_code"] = opts.AccessCode
+		}
 	}
 
 	resp, err := fs.client.DoRequest(ctx, "GET", endpoint, params, nil)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	var listResp ShareListResponse
-	if err := json.NewDecoder(resp.Body).Decode(&listResp); err != nil {
-		return nil, api.WrapAPIError(api.ErrUnknown, "failed to parse share list response", err)
+	var result GetShareListResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, 0, api.WrapAPIError(api.ErrUnknown, "failed to parse share list response", err)
 	}
 
-	if !listResp.IsSuccess() {
-		return nil, &api.APIError{
-			Code:    listResp.GetErrorCode(),
-			Message: listResp.Message,
-		}
-	}
-
-	return listResp.Data.Shares, nil
+	// The utilRequest get_share_list doesn't return success wrapper; trust HTTP status
+	return result.Datas, result.Total, nil
 }
 
 // QNAPShareCreateResponse represents the response from creating a QNAP share link
@@ -210,48 +237,17 @@ func (fs *FileStationService) UpdateShareLink(ctx context.Context, options *Upda
 	return &result.Data, nil
 }
 
-// GetShareListResponse represents the response from getting share list
+// GetShareListResponse represents the QNAP utilRequest.cgi get_share_list response
+// per documentation screenshot: top-level fields with "datas" and "total".
 type GetShareListResponse struct {
-	api.BaseResponse
-	Data struct {
-		Shares []ShareLink `json:"shares"`
-		Total  int         `json:"total"`
-	} `json:"data"`
+	DateFormat       int         `json:"date_format"`
+	TimeFormat       int         `json:"time_format"`
+	MaxShareFile     int         `json:"max_share_file"`
+	TotalSharedItems int         `json:"total_shared_items"`
+	Total            int         `json:"total"`
+	Datas            []ShareLink `json:"datas"`
 }
 
-// GetShareList lists all shares
-func (fs *FileStationService) GetShareList(ctx context.Context) ([]ShareLink, error) {
-	sid := fs.client.GetSID()
-	if sid == "" {
-		return nil, api.WrapAPIError(api.ErrAuthFailed, "not authenticated", nil)
-	}
-
-	endpoint := "/cgi-bin/filemanager/utilRequest.cgi"
-	params := map[string]string{
-		"func": "get_share_list",
-		"sid":  sid,
-	}
-
-	resp, err := fs.client.DoRequest(ctx, "GET", endpoint, params, nil)
-	if err != nil {
-		return nil, err
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	var result GetShareListResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, api.WrapAPIError(api.ErrUnknown, "failed to parse share list response", err)
-	}
-
-	if !result.IsSuccess() {
-		return nil, &api.APIError{
-			Code:    result.GetErrorCode(),
-			Message: result.Message,
-		}
-	}
-
-	return result.Data.Shares, nil
-}
 
 // ShareMember represents a member of a share
 type ShareMember struct {
