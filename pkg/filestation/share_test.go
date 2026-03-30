@@ -649,7 +649,7 @@ func TestGetShareList_Success(t *testing.T) {
 		},
 	})
 
-shares, _, err := fs.ListShareLinks(ctx, nil)
+	shares, _, err := fs.ListShareLinks(ctx, nil)
 
 	if err != nil {
 		t.Errorf("GetShareList() unexpected error = %v", err)
@@ -740,7 +740,7 @@ func TestGetShareList_TableDriven(t *testing.T) {
 
 			mockServer.SetResponse("GET", "/cgi-bin/filemanager/utilRequest.cgi", tt.mockResponse)
 
-shares, _, err := fs.ListShareLinks(ctx, nil)
+			shares, _, err := fs.ListShareLinks(ctx, nil)
 
 			if tt.wantErr {
 				if err == nil {
@@ -773,7 +773,7 @@ func TestGetShareList_NotAuthenticated(t *testing.T) {
 	ctx := context.Background()
 	fs := NewFileStationService(client)
 
-_, err := fs.ListShareLinks(ctx, nil)
+	_, _, err := fs.ListShareLinks(ctx, nil)
 
 	if err == nil {
 		t.Error("GetShareList() expected error when not authenticated")
@@ -2337,33 +2337,33 @@ func TestListShareLinks_Success(t *testing.T) {
 	ctx := context.Background()
 	fs := NewFileStationService(client)
 
-mockServer.SetResponse("GET", "/cgi-bin/filemanager/utilRequest.cgi",
+	mockServer.SetResponse("GET", "/cgi-bin/filemanager/utilRequest.cgi", testutil.MockResponse{
 		StatusCode: 200,
-Body: map[string]interface{}{
-			"date_format": 1,
-			"time_format": 24,
-			"max_share_file": 100000,
+		Body: map[string]interface{}{
+			"date_format":        1,
+			"time_format":        24,
+			"max_share_file":     100000,
 			"total_shared_items": 2,
-			"total": 2,
+			"total":              2,
 			"datas": []ShareLink{
-					{
-						ID:   "share-1",
-						Name: "Share 1",
-						URL:  "https://example.com/share/1",
-					},
-					{
-						ID:   "share-2",
-						Name: "Share 2",
-						URL:  "https://example.com/share/2",
-					},
-},
+				{
+					ID:   "share-1",
+					Name: "Share 1",
+					URL:  "https://example.com/share/1",
+				},
+				{
+					ID:   "share-2",
+					Name: "Share 2",
+					URL:  "https://example.com/share/2",
+				},
+			},
 		},
 	})
 
-links, total, err := fs.ListShareLinks(ctx, nil)
-if total != 2 {
-	 t.Errorf("ListShareLinks() total = %d, want 2", total)
-}
+	links, total, err := fs.ListShareLinks(ctx, nil)
+	if total != 2 {
+		t.Errorf("ListShareLinks() total = %d, want 2", total)
+	}
 
 	if err != nil {
 		t.Errorf("ListShareLinks() unexpected error = %v", err)
@@ -2391,17 +2391,17 @@ func TestListShareLinks_TableDriven(t *testing.T) {
 			name: "success with links",
 			mockResponse: testutil.MockResponse{
 				StatusCode: 200,
-Body: map[string]interface{}{
-				"date_format": 1,
-				"time_format": 24,
-				"max_share_file": 100000,
-				"total_shared_items": 3,
-				"total": 3,
-				"datas": []ShareLink{
-							{ID: "1", Name: "Link 1"},
-							{ID: "2", Name: "Link 2"},
-							{ID: "3", Name: "Link 3"},
-},
+				Body: map[string]interface{}{
+					"date_format":        1,
+					"time_format":        24,
+					"max_share_file":     100000,
+					"total_shared_items": 3,
+					"total":              3,
+					"datas": []ShareLink{
+						{ID: "1", Name: "Link 1"},
+						{ID: "2", Name: "Link 2"},
+						{ID: "3", Name: "Link 3"},
+					},
 				},
 			},
 			wantCount: 3,
@@ -2411,14 +2411,13 @@ Body: map[string]interface{}{
 			name: "empty list",
 			mockResponse: testutil.MockResponse{
 				StatusCode: 200,
-Body: map[string]interface{}{
-				"date_format": 1,
-				"time_format": 24,
-				"max_share_file": 100000,
-				"total_shared_items": 0,
-				"total": 0,
-				"datas": []ShareLink{},
-				},
+				Body: map[string]interface{}{
+					"date_format":        1,
+					"time_format":        24,
+					"max_share_file":     100000,
+					"total_shared_items": 0,
+					"total":              0,
+					"datas":              []ShareLink{},
 				},
 			},
 			wantCount: 0,
@@ -2455,10 +2454,10 @@ Body: map[string]interface{}{
 			ctx := context.Background()
 			fs := NewFileStationService(client)
 
-mockServer.SetResponse("GET", "/cgi-bin/filemanager/utilRequest.cgi", tt.mockResponse)
+			mockServer.SetResponse("GET", "/cgi-bin/filemanager/utilRequest.cgi", tt.mockResponse)
 
-links, total, err := fs.ListShareLinks(ctx, nil)
-_ = total // in table-driven test we only verify count below
+			links, total, err := fs.ListShareLinks(ctx, nil)
+			_ = total // in table-driven test we only verify count below
 
 			if tt.wantErr {
 				if err == nil {
@@ -2491,7 +2490,7 @@ func TestListShareLinks_NotAuthenticated(t *testing.T) {
 	ctx := context.Background()
 	fs := NewFileStationService(client)
 
-_, _, err := fs.ListShareLinks(ctx, nil)
+	_, _, err := fs.ListShareLinks(ctx, nil)
 
 	if err == nil {
 		t.Error("ListShareLinks() expected error when not authenticated")

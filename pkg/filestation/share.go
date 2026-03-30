@@ -25,10 +25,10 @@ type ShareListResponse struct {
 // - Start: start index (0-based according to most utilRequest endpoints)
 // - Limit: page size
 type ShareListOptions struct {
-	Dir        string
-	Start      int
-	Limit      int
-	Sort       string
+	Dir   string
+	Start int
+	Limit int
+	Sort  string
 	// If NAS requires password to list shares, provide AccessCode; it will be sent
 	// as 'access_code' per utilRequest.cgi get_share_list documentation.
 	AccessCode string
@@ -247,7 +247,6 @@ type GetShareListResponse struct {
 	Total            int         `json:"total"`
 	Datas            []ShareLink `json:"datas"`
 }
-
 
 // ShareMember represents a member of a share
 type ShareMember struct {

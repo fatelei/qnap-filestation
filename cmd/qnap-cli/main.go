@@ -322,8 +322,8 @@ func cmdSharesList(cfg *globalConfig, args []string) error {
 			return err
 		}
 		return printOutput(struct {
-			Total int                         `json:"total"`
-			Items []filestation.ShareLink     `json:"items"`
+			Total int                     `json:"total"`
+			Items []filestation.ShareLink `json:"items"`
 		}{Total: total, Items: links}, cfg.output)
 	}, cfg)
 }
