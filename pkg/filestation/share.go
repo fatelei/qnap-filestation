@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/fatelei/qnap-filestation/pkg/api"
@@ -71,13 +72,36 @@ func (fs *FileStationService) ListShareLinks(ctx context.Context, opts *ShareLis
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	var result GetShareListResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, 0, api.WrapAPIError(api.ErrUnknown, "failed to parse share list response", err)
+	// Read the body once so we can support multiple response formats from QNAP
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, 0, api.WrapAPIError(api.ErrUnknown, "failed to read share list response", err)
 	}
 
-	// The utilRequest get_share_list doesn't return success wrapper; trust HTTP status
-	return result.Datas, result.Total, nil
+	// Detect whether the response uses the BaseResponse wrapper (with "success" and nested data)
+	var detect struct {
+		Success *int `json:"success"`
+	}
+	_ = json.Unmarshal(body, &detect)
+
+	if detect.Success != nil {
+		// Wrapper format: { success, data: { shares: [...], total: N } }
+		var wrapped ShareListResponse
+		if err := json.Unmarshal(body, &wrapped); err != nil {
+			return nil, 0, api.WrapAPIError(api.ErrUnknown, "failed to parse wrapped share list response", err)
+		}
+		if !wrapped.IsSuccess() {
+			return nil, 0, &api.APIError{Code: wrapped.GetErrorCode(), Message: wrapped.Message}
+		}
+		return wrapped.Data.Shares, wrapped.Data.Total, nil
+	}
+
+	// utilRequest format: top-level fields with "datas" and "total"
+	var util GetShareListResponse
+	if err := json.Unmarshal(body, &util); err != nil {
+		return nil, 0, api.WrapAPIError(api.ErrUnknown, "failed to parse util share list response", err)
+	}
+	return util.Datas, util.Total, nil
 }
 
 // QNAPShareCreateResponse represents the response from creating a QNAP share link
